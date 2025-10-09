@@ -53,21 +53,44 @@ PendingExecutionResult PendingQueryResult::ExecuteTaskInternal(ClientContextLock
 	return context->ExecuteTaskInternal(lock, *this);
 }
 
-unique_ptr<QueryResult> PendingQueryResult::ExecuteInternal(ClientContextLock &lock) {
+unique_ptr<QueryResult> PendingQueryResult::ExecuteInternal(ClientContextLock &lock, bool continue_exec) {
 	CheckExecutableInternal(lock);
 	while (ExecuteTaskInternal(lock) == PendingExecutionResult::RESULT_NOT_READY) {
 	}
 	if (HasError()) {
 		return make_unique<MaterializedQueryResult>(error);
 	}
-	auto result = context->FetchResultInternal(lock, *this);
-	Close();
+	auto result = context->FetchResultInternal(lock, *this, continue_exec);
+	if (!continue_exec)
+		Close();
+	return result;
+}
+
+unique_ptr<ColumnDataCollection> PendingQueryResult::ExecuteRowInternal(ClientContextLock &lock, bool continue_exec) {
+	CheckExecutableInternal(lock);
+	while (ExecuteTaskInternal(lock) == PendingExecutionResult::RESULT_NOT_READY) {
+	}
+	if (HasError()) {
+		Printer::Print("has error!!!");
+		D_ASSERT(false);
+	}
+	auto result = context->FetchCollectionInternal(lock, *this, continue_exec);
+	if (!continue_exec)
+		Close();
 	return result;
 }
 
 unique_ptr<QueryResult> PendingQueryResult::Execute() {
 	auto lock = LockContext();
 	return ExecuteInternal(*lock);
+}
+
+unique_ptr<QueryResult> PendingQueryResult::Execute(ClientContextLock &lock) {
+	return ExecuteInternal(lock, true);
+}
+
+unique_ptr<ColumnDataCollection> PendingQueryResult::ExecuteRow(ClientContextLock &lock) {
+	return ExecuteRowInternal(lock, true);
 }
 
 void PendingQueryResult::Close() {

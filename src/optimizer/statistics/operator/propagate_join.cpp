@@ -132,8 +132,10 @@ void StatisticsPropagator::PropagateStatistics(LogicalComparisonJoin &join, uniq
 			auto stats_right = PropagateExpression(condition.right);
 			// Update join_stats when is already part of the join
 			if (join.join_stats.size() == 2) {
-				join.join_stats[0] = std::move(stats_left);
-				join.join_stats[1] = std::move(stats_right);
+				if (stats_left)
+					join.join_stats[0] = std::move(stats_left);
+				if (stats_right)
+					join.join_stats[1] = std::move(stats_right);
 			}
 			break;
 		}

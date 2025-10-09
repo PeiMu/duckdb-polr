@@ -23,7 +23,8 @@ TransactionContext::~TransactionContext() {
 
 void TransactionContext::BeginTransaction() {
 	if (current_transaction) {
-		throw TransactionException("cannot start a transaction within a transaction");
+		// todo: Might have bugs here
+//		throw TransactionException("cannot start a transaction within a transaction");
 	}
 	auto start_timestamp = Timestamp::GetCurrentTimestamp();
 	auto catalog_version = Catalog::GetSystemCatalog(context).GetCatalogVersion();

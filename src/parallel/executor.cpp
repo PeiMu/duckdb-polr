@@ -521,6 +521,13 @@ unique_ptr<QueryResult> Executor::GetResult() {
 	return result_collector.GetResult(*result_collector.sink_state);
 }
 
+unique_ptr<ColumnDataCollection> Executor::GetRowCollection() {
+	D_ASSERT(HasResultCollector());
+	auto &result_collector = (PhysicalResultCollector &)*physical_plan;
+	D_ASSERT(result_collector.sink_state);
+	return result_collector.GetRowCollection(*result_collector.sink_state);
+}
+
 unique_ptr<DataChunk> Executor::FetchChunk() {
 	D_ASSERT(physical_plan);
 

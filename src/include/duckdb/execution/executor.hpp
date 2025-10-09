@@ -24,6 +24,7 @@ class OperatorState;
 class QueryProfiler;
 class ThreadContext;
 class Task;
+class ColumnDataCollection;
 
 struct PipelineEventStack;
 struct ProducerToken;
@@ -88,6 +89,8 @@ public:
 	bool HasResultCollector();
 	//! Returns the query result - can only be used if `HasResultCollector` returns true
 	unique_ptr<QueryResult> GetResult();
+
+	unique_ptr<ColumnDataCollection> GetRowCollection();
 
 private:
 	void InitializeInternal(PhysicalOperator *physical_plan);

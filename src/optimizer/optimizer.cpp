@@ -70,7 +70,24 @@ void Optimizer::Verify(LogicalOperator &op) {
 }
 
 unique_ptr<LogicalOperator> Optimizer::Optimize(unique_ptr<LogicalOperator> plan_p) {
+	auto pre_opt_plan = PreOptimize(std::move(plan_p));
+	auto post_opt_plan = PostOptimize(std::move(pre_opt_plan));
+
+	return post_opt_plan;
+}
+
+unique_ptr<LogicalOperator> Optimizer::PreOptimize(unique_ptr<LogicalOperator> plan_p) {
+#ifdef DEBUG
 	Verify(*plan_p);
+#endif
+	switch (plan_p->type) {
+	case LogicalOperatorType::LOGICAL_TRANSACTION:
+	case LogicalOperatorType::LOGICAL_PRAGMA:
+		return plan_p; // skip optimizing simple & often-occurring plans unaffected by rewrites
+	default:
+		break;
+	}
+
 	this->plan = std::move(plan_p);
 	// first we perform expression rewrites using the ExpressionRewriter
 	// this does not change the logical plan structure, but only simplifies the expression trees
@@ -98,17 +115,52 @@ unique_ptr<LogicalOperator> Optimizer::Optimize(unique_ptr<LogicalOperator> plan
 		plan = rewriter.Rewrite(std::move(plan));
 	});
 
+	// removes any redundant DelimGets/DelimJoins
+	RunOptimizer(OptimizerType::DELIMINATOR, [&]() {
+		Deliminator deliminator(context);
+		plan = deliminator.Optimize(std::move(plan));
+	});
+
+#if !REORDER_DATACHUNK && ENABLE_REORDER_PLAN
+	if (context.config.enable_dbshaker_query_split) {
+		RunOptimizer(OptimizerType::REORDER_GET, [&]() {
+			ReorderGet reorder_get(context);
+			plan = reorder_get.Optimize(std::move(plan));
+
+			if (reorder_get.NeedFilterPushDown()) {
+				FilterPushdown filter_pushdown(*this);
+				plan = filter_pushdown.Rewrite(std::move(plan));
+			}
+		});
+	}
+#endif
+
+#ifdef DEBUG
+	Planner::VerifyPlan(context, plan);
+#endif
+
+	return std::move(plan);
+}
+
+unique_ptr<LogicalOperator> Optimizer::PostOptimize(unique_ptr<LogicalOperator> plan_p) {
+#ifdef DEBUG
+	Verify(*plan_p);
+#endif
+	switch (plan_p->type) {
+	case LogicalOperatorType::LOGICAL_TRANSACTION:
+	case LogicalOperatorType::LOGICAL_PRAGMA:
+		return plan_p; // skip optimizing simple & often-occurring plans unaffected by rewrites
+	default:
+		break;
+	}
+
+	this->plan = std::move(plan_p);
+
 	// then we perform the join ordering optimization
 	// this also rewrites cross products + filters into joins and performs filter pushdowns
 	RunOptimizer(OptimizerType::JOIN_ORDER, [&]() {
 		JoinOrderOptimizer optimizer(context);
 		plan = optimizer.Optimize(std::move(plan));
-	});
-
-	// removes any redundant DelimGets/DelimJoins
-	RunOptimizer(OptimizerType::DELIMINATOR, [&]() {
-		Deliminator deliminator(context);
-		plan = deliminator.Optimize(std::move(plan));
 	});
 
 	RunOptimizer(OptimizerType::UNUSED_COLUMNS, [&]() {
@@ -156,7 +208,43 @@ unique_ptr<LogicalOperator> Optimizer::Optimize(unique_ptr<LogicalOperator> plan
 		});
 	}
 
+#ifdef DEBUG
 	Planner::VerifyPlan(context, plan);
+#endif
+
+	return std::move(plan);
+}
+
+unique_ptr<LogicalOperator> Optimizer::ReorderGetOptimize(unique_ptr<LogicalOperator> plan_p) {
+#ifdef DEBUG
+	Verify(*plan_p);
+#endif
+
+	switch (plan_p->type) {
+	case LogicalOperatorType::LOGICAL_TRANSACTION:
+		return plan_p; // skip optimizing simple & often-occurring plans unaffected by rewrites
+	default:
+		break;
+	}
+
+	this->plan = std::move(plan_p);
+
+	//	// todo: have STATISTICS_PROPAGATION before REORDER_GET when it can get better cardEst for filter
+	//	RunOptimizer(OptimizerType::STATISTICS_PROPAGATION, [&]() {
+	//		StatisticsPropagator propagator(*this);
+	//		propagator.PropagateStatistics(plan);
+	//		statistics_map = propagator.GetStatisticsMap();
+	//	});
+
+	RunOptimizer(OptimizerType::REORDER_GET, [&]() {
+		ReorderGet reorder_get(context);
+		plan = reorder_get.Optimize(std::move(plan));
+
+		if (reorder_get.NeedFilterPushDown()) {
+			FilterPushdown filter_pushdown(*this);
+			plan = filter_pushdown.Rewrite(std::move(plan));
+		}
+	});
 
 	return std::move(plan);
 }

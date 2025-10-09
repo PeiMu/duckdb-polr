@@ -28,7 +28,9 @@ enum class OptimizerType : uint32_t {
 	COLUMN_LIFETIME,
 	TOP_N,
 	REORDER_FILTER,
-	EXTENSION
+	EXTENSION,
+	QUERY_SPLIT,
+	REORDER_GET
 };
 
 string OptimizerTypeToString(OptimizerType type);

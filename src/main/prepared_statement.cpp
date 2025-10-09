@@ -70,7 +70,53 @@ unique_ptr<QueryResult> PreparedStatement::Execute(vector<Value> &values, bool a
 	if (pending->HasError()) {
 		return make_unique<MaterializedQueryResult>(pending->GetErrorObject());
 	}
-	return pending->Execute();
+#if ENABLE_MEASURE_EXE_TIME || ENABLE_MERGE_BACK_PLAN
+	auto timer = chrono_tic();
+#endif
+	auto ret = pending->Execute();
+#if ENABLE_MEASURE_EXE_TIME || ENABLE_MERGE_BACK_PLAN
+	if (execute_plan) {
+		auto execute_time = chrono_toc(&timer, "PreparedStatement::Execute time is, ", false);
+		// save time to a file
+		std::ofstream log_file;
+		log_file.open("time_log.csv", std::ios_base::app);
+		log_file << std::to_string(execute_time/1000) + "\n";
+		log_file.close();
+	}
+#endif
+	return ret;
+}
+
+unique_ptr<QueryResult> PreparedStatement::Execute(ClientContextLock &lock, vector<Value> &values,
+                                                   bool allow_stream_result) {
+	auto pending = PendingQuery(lock, values, allow_stream_result);
+	if (pending->HasError()) {
+		return make_unique<MaterializedQueryResult>(pending->GetErrorObject());
+	}
+	return pending->Execute(lock);
+}
+
+unique_ptr<ColumnDataCollection> PreparedStatement::ExecuteRow(ClientContextLock &lock, vector<Value> &values,
+                                                               bool allow_stream_result) {
+	auto pending = PendingQuery(lock, values, allow_stream_result);
+	if (pending->HasError()) {
+		pending->GetErrorObject().Throw("has error with ");
+	}
+#if ENABLE_MEASURE_EXE_TIME
+	auto timer = chrono_tic();
+#endif
+	auto ret = pending->ExecuteRow(lock);
+#if ENABLE_MEASURE_EXE_TIME
+	if (execute_plan) {
+		auto execute_time = chrono_toc(&timer, "PreparedStatement::Execute time is, ", false);
+		// save time to a file
+		std::ofstream log_file;
+		log_file.open("time_log.csv", std::ios_base::app);
+		log_file << std::to_string(execute_time / 1000) + ", ";
+		log_file.close();
+	}
+#endif
+	return ret;
 }
 
 unique_ptr<PendingQueryResult> PreparedStatement::PendingQuery(vector<Value> &values, bool allow_stream_result) {
@@ -82,6 +128,19 @@ unique_ptr<PendingQueryResult> PreparedStatement::PendingQuery(vector<Value> &va
 	parameters.parameters = &values;
 	parameters.allow_stream_result = allow_stream_result && data->properties.allow_stream_result;
 	auto result = context->PendingQuery(query, data, parameters);
+	return result;
+}
+
+unique_ptr<PendingQueryResult> PreparedStatement::PendingQuery(ClientContextLock &lock, vector<Value> &values,
+                                                               bool allow_stream_result) {
+	if (!success) {
+		throw InvalidInputException("Attempting to execute an unsuccessfully prepared statement!");
+	}
+	D_ASSERT(data);
+	PendingQueryParameters parameters;
+	parameters.parameters = &values;
+	parameters.allow_stream_result = allow_stream_result && data->properties.allow_stream_result;
+	auto result = context->PendingQuery(lock, query, data, parameters);
 	return result;
 }
 

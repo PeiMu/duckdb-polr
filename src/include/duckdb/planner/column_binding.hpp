@@ -26,6 +26,12 @@ struct ColumnBinding {
 	bool operator==(const ColumnBinding &rhs) const {
 		return table_index == rhs.table_index && column_index == rhs.column_index;
 	}
+
+	struct ColumnBindingHash {
+		std::size_t operator()(const ColumnBinding &rhs) const {
+			return rhs.table_index << 32 | rhs.column_index;
+		}
+	};
 };
 
 } // namespace duckdb

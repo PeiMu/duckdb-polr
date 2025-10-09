@@ -33,6 +33,8 @@ unique_ptr<NodeStatistics> StatisticsPropagator::PropagateStatistics(LogicalOper
 		return PropagateStatistics((LogicalFilter &)node, node_ptr);
 	case LogicalOperatorType::LOGICAL_GET:
 		return PropagateStatistics((LogicalGet &)node, node_ptr);
+	case LogicalOperatorType::LOGICAL_CHUNK_GET:
+		return PropagateStatistics((LogicalColumnDataGet &)node, node_ptr);
 	case LogicalOperatorType::LOGICAL_PROJECTION:
 		return PropagateStatistics((LogicalProjection &)node, node_ptr);
 	case LogicalOperatorType::LOGICAL_ANY_JOIN:

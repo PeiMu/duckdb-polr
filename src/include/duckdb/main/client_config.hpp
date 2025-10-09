@@ -12,8 +12,8 @@
 #include "duckdb/common/common.hpp"
 #include "duckdb/common/enums/output_type.hpp"
 #include "duckdb/common/enums/profiler_format.hpp"
-#include "duckdb/common/types/value.hpp"
 #include "duckdb/common/progress_bar/progress_bar.hpp"
+#include "duckdb/common/types/value.hpp"
 
 namespace duckdb {
 class ClientContext;
@@ -88,6 +88,25 @@ struct ClientConfig {
 	//! Function that is used to create the result collector for a materialized result
 	//! Defaults to PhysicalMaterializedCollector
 	get_result_collector_t result_collector = nullptr;
+
+	//! Enable DBShaker
+#if ENABLE_QUERY_SPLIT
+	bool enable_dbshaker_query_split = true;
+#if ENABLE_CROSS_PRODUCT_REWRITE
+	bool enable_dbshaker_split_jop = true;
+#else
+	bool enable_dbshaker_split_jop = false;
+#endif
+#else
+	bool enable_dbshaker_query_split = false;
+	bool enable_dbshaker_split_jop = false;
+#endif
+
+	//! blow is unused yet
+	bool merge_back_plan = false;
+	bool specify_estimated_card = false;
+	bool manual_explain_analyze = false;
+	bool whole_plan_manual_explain_analyze = false;
 
 public:
 	static ClientConfig &GetConfig(ClientContext &context);

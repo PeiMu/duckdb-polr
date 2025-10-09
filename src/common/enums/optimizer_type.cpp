@@ -26,6 +26,8 @@ static DefaultOptimizerType internal_optimizer_types[] = {
     {"top_n", OptimizerType::TOP_N},
     {"reorder_filter", OptimizerType::REORDER_FILTER},
     {"extension", OptimizerType::EXTENSION},
+    {"query_split", OptimizerType::QUERY_SPLIT},
+    {"reorder_get", OptimizerType::REORDER_GET},
     {nullptr, OptimizerType::INVALID}};
 
 string OptimizerTypeToString(OptimizerType type) {

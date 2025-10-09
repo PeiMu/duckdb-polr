@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include "duckdb/execution/physical_operator.hpp"
 #include "duckdb/common/enums/statement_type.hpp"
+#include "duckdb/execution/physical_operator.hpp"
 
 namespace duckdb {
 class PreparedStatementData;
+class ColumnDataCollection;
 
 //! PhysicalResultCollector is an abstract class that is used to generate the final result of a query
 class PhysicalResultCollector : public PhysicalOperator {
@@ -30,6 +31,10 @@ public:
 public:
 	//! The final method used to fetch the query result from this operator
 	virtual unique_ptr<QueryResult> GetResult(GlobalSinkState &state) = 0;
+
+	virtual unique_ptr<ColumnDataCollection> GetRowCollection(GlobalSinkState &state) {
+		return make_unique<ColumnDataCollection>(Allocator::DefaultAllocator(), types);
+	};
 
 	bool IsSink() const override {
 		return true;

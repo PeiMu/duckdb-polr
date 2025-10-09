@@ -12,6 +12,8 @@
 #include "duckdb/planner/logical_operator.hpp"
 #include "duckdb/planner/logical_operator_visitor.hpp"
 #include "duckdb/common/enums/optimizer_type.hpp"
+#include "duckdb/optimizer/query_split/query_split.hpp"
+#include "duckdb/optimizer/reorder_get.h"
 
 #include <functional>
 
@@ -23,6 +25,12 @@ public:
 	Optimizer(Binder &binder, ClientContext &context);
 
 	unique_ptr<LogicalOperator> Optimize(unique_ptr<LogicalOperator> plan);
+	//! Optimize a plan by running specialized optimizers before join order optimization
+	unique_ptr<LogicalOperator> PreOptimize(unique_ptr<LogicalOperator> plan);
+	//! Optimize a plan by running specialized optimizers when enable split_jop config
+	unique_ptr<LogicalOperator> ReorderGetOptimize(unique_ptr<LogicalOperator> plan);
+	//! Optimize a plan by running specialized optimizers after join order optimization
+	unique_ptr<LogicalOperator> PostOptimize(unique_ptr<LogicalOperator> plan);
 
 	ClientContext &context;
 	Binder &binder;

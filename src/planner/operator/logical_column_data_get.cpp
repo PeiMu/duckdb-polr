@@ -38,6 +38,14 @@ unique_ptr<LogicalOperator> LogicalColumnDataGet::Deserialize(LogicalDeserializa
 	return make_unique<LogicalColumnDataGet>(table_index, std::move(chunk_types), std::move(collection));
 }
 
+idx_t LogicalColumnDataGet::EstimateCardinality(ClientContext &context) {
+	if (has_estimated_cardinality) {
+		return estimated_cardinality;
+	}
+	estimated_cardinality = collection->Count();
+	return estimated_cardinality;
+}
+
 vector<idx_t> LogicalColumnDataGet::GetTableIndex() const {
 	return vector<idx_t> {table_index};
 }
