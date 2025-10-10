@@ -82,14 +82,14 @@ void appendLineToFile(string filepath, string line) {
 const TableExpr GetConstTableExpr(const unique_ptr<Expression> &expr) {
 	switch (expr->type) {
 	case ExpressionType::BOUND_COLUMN_REF: {
-		auto &bound_col_ref_expr = expr->Cast<BoundColumnRefExpression>();
+		auto &bound_col_ref_expr = (BoundColumnRefExpression&)(*expr);
 		return TableExpr {bound_col_ref_expr.binding.table_index, bound_col_ref_expr.binding.column_index,
 		                  bound_col_ref_expr.alias, bound_col_ref_expr.return_type};
 	}
 	case ExpressionType::OPERATOR_CAST:
-		return GetConstTableExpr(expr->Cast<BoundCastExpression>().child);
+		return GetConstTableExpr(((BoundCastExpression&)(*expr)).child);
 	case ExpressionType::BOUND_FUNCTION: {
-		auto &bound_func_expr = expr->Cast<BoundFunctionExpression>();
+		auto &bound_func_expr = (BoundFunctionExpression&)(*expr);
 #ifdef DEBUG
 		D_ASSERT(2 == bound_func_expr.children.size());
 #endif
@@ -108,7 +108,7 @@ const TableExpr GetConstTableExpr(const unique_ptr<Expression> &expr) {
 	}
 	case ExpressionType::COMPARE_BETWEEN:
 	case ExpressionType::COMPARE_NOT_BETWEEN: {
-		auto &compare_expr = expr->Cast<BoundBetweenExpression>();
+		auto &compare_expr = (BoundBetweenExpression&)(*expr);
 		return GetConstTableExpr(compare_expr.input);
 	}
 	default:
@@ -122,11 +122,11 @@ const TableExpr GetConstTableExpr(const unique_ptr<Expression> &expr) {
 ColumnBinding &GetRefColumnBinding(unique_ptr<Expression> &expr) {
 	switch (expr->type) {
 	case ExpressionType::BOUND_COLUMN_REF:
-		return expr->Cast<BoundColumnRefExpression>().binding;
+		return ((BoundColumnRefExpression&)(*expr)).binding;
 	case ExpressionType::OPERATOR_CAST:
-		return GetRefColumnBinding(expr->Cast<BoundCastExpression>().child);
+		return GetRefColumnBinding(((BoundCastExpression&)(*expr)).child);
 	case ExpressionType::BOUND_FUNCTION: {
-		auto &bound_func_expr = expr->Cast<BoundFunctionExpression>();
+		auto &bound_func_expr = (BoundFunctionExpression&)(*expr);
 #ifdef DEBUG
 		D_ASSERT(2 == bound_func_expr.children.size());
 #endif
@@ -145,7 +145,7 @@ ColumnBinding &GetRefColumnBinding(unique_ptr<Expression> &expr) {
 	}
 	case ExpressionType::COMPARE_BETWEEN:
 	case ExpressionType::COMPARE_NOT_BETWEEN: {
-		auto &compare_expr = expr->Cast<BoundBetweenExpression>();
+		auto &compare_expr = (BoundBetweenExpression&)(*expr);
 		return GetRefColumnBinding(compare_expr.input);
 	}
 	default:
@@ -187,10 +187,10 @@ void UpdateExprs(unique_ptr<Expression> &expr, T &&func) {
 	case ExpressionType::VALUE_CONSTANT:
 		return;
 	case ExpressionType::BOUND_FUNCTION:
-		UpdateFunctionExpr(expr->Cast<BoundFunctionExpression>(), func);
+		UpdateFunctionExpr((BoundFunctionExpression&)(*expr), func);
 		return;
 	case ExpressionType::CASE_EXPR:
-		UpdateCaseExpr(expr->Cast<BoundCaseExpression>(), func);
+		UpdateCaseExpr((BoundCaseExpression&)(*expr), func);
 		return;
 	case ExpressionType::COMPARE_NOTEQUAL:
 	case ExpressionType::COMPARE_EQUAL:
@@ -198,11 +198,11 @@ void UpdateExprs(unique_ptr<Expression> &expr, T &&func) {
 	case ExpressionType::COMPARE_LESSTHAN:
 	case ExpressionType::COMPARE_GREATERTHANOREQUALTO:
 	case ExpressionType::COMPARE_LESSTHANOREQUALTO:
-		UpdateComparisonExpr(expr->Cast<BoundComparisonExpression>(), func);
+		UpdateComparisonExpr((BoundComparisonExpression&)(*expr), func);
 		return;
 	case ExpressionType::CONJUNCTION_OR:
 	case ExpressionType::CONJUNCTION_AND: {
-		auto &conjunction_expr = expr->Cast<BoundConjunctionExpression>();
+		auto &conjunction_expr = (BoundConjunctionExpression&)(*expr);
 		for (auto &child_expr : conjunction_expr.children) {
 			UpdateExprs(child_expr, func);
 		}
@@ -212,7 +212,7 @@ void UpdateExprs(unique_ptr<Expression> &expr, T &&func) {
 	case ExpressionType::OPERATOR_IS_NOT_NULL:
 	case ExpressionType::OPERATOR_NOT:
 	case ExpressionType::OPERATOR_COALESCE: {
-		auto &operator_expr = expr->Cast<BoundOperatorExpression>();
+		auto &operator_expr = (BoundOperatorExpression&)(*expr);
 		for (auto &child_expr : operator_expr.children) {
 			UpdateExprs(child_expr, func);
 		}
@@ -257,10 +257,10 @@ void VisitExprs(const unique_ptr<Expression> &expr, T &&func) {
 	case ExpressionType::VALUE_CONSTANT:
 		return;
 	case ExpressionType::BOUND_FUNCTION:
-		VisitFunctionExpr(expr->Cast<BoundFunctionExpression>(), func);
+		VisitFunctionExpr((BoundFunctionExpression&)(*expr), func);
 		return;
 	case ExpressionType::CASE_EXPR:
-		VisitCaseExpr(expr->Cast<BoundCaseExpression>(), func);
+		VisitCaseExpr((BoundCaseExpression&)(*expr), func);
 		return;
 	case ExpressionType::COMPARE_NOTEQUAL:
 	case ExpressionType::COMPARE_EQUAL:
@@ -268,11 +268,11 @@ void VisitExprs(const unique_ptr<Expression> &expr, T &&func) {
 	case ExpressionType::COMPARE_LESSTHAN:
 	case ExpressionType::COMPARE_GREATERTHANOREQUALTO:
 	case ExpressionType::COMPARE_LESSTHANOREQUALTO:
-		VisitComparisonExpr(expr->Cast<BoundComparisonExpression>(), func);
+		VisitComparisonExpr((BoundComparisonExpression&)(*expr), func);
 		return;
 	case ExpressionType::CONJUNCTION_OR:
 	case ExpressionType::CONJUNCTION_AND: {
-		auto &conjunction_expr = expr->Cast<BoundConjunctionExpression>();
+		auto &conjunction_expr = (BoundConjunctionExpression&)(*expr);
 		for (const auto &child_expr : conjunction_expr.children) {
 			VisitExprs(child_expr, func);
 		}
@@ -282,7 +282,7 @@ void VisitExprs(const unique_ptr<Expression> &expr, T &&func) {
 	case ExpressionType::OPERATOR_IS_NOT_NULL:
 	case ExpressionType::OPERATOR_NOT:
 	case ExpressionType::OPERATOR_COALESCE: {
-		auto &operator_expr = expr->Cast<BoundOperatorExpression>();
+		auto &operator_expr = (BoundOperatorExpression&)(*expr);
 		for (const auto &child_expr : operator_expr.children) {
 			VisitExprs(child_expr, func);
 		}

@@ -23,7 +23,7 @@ unique_ptr<LogicalOperator> ReorderGet::Optimize(unique_ptr<LogicalOperator> pla
 	                 this](unique_ptr<LogicalOperator> &op) {
 		for (auto &child : op->children) {
 			if (LogicalOperatorType::LOGICAL_GET == child->type) {
-				auto &get_op = child->Cast<LogicalGet>();
+				auto &get_op = (LogicalGet&)(*child);
 				idx_t estimated_card = get_op.EstimateCardinality(context);
 				auto temp_table_card = std::make_pair(get_op.table_index, estimated_card);
 				table_index_blocks[get_op.table_index] = std::move(child);
@@ -39,7 +39,7 @@ unique_ptr<LogicalOperator> ReorderGet::Optimize(unique_ptr<LogicalOperator> pla
 				continue;
 #if REORDER_DATACHUNK
 			} else if (LogicalOperatorType::LOGICAL_CHUNK_GET == child->type) {
-				auto &chunk_get_op = child->Cast<LogicalColumnDataGet>();
+				auto &chunk_get_op = (LogicalColumnDataGet&)(*child);
 				auto temp_table_card =
 				    std::make_pair(chunk_get_op.table_index, chunk_get_op.EstimateCardinality(context));
 				table_index_blocks[chunk_get_op.table_index] = std::move(child);
@@ -68,16 +68,16 @@ unique_ptr<LogicalOperator> ReorderGet::Optimize(unique_ptr<LogicalOperator> pla
 							break;
 						}
 
-						switch (child->type) {
-						case LogicalOperatorType::LOGICAL_GET: {
-							auto &get_op = child->Cast<LogicalGet>();
+					switch (child->type) {
+					case LogicalOperatorType::LOGICAL_GET: {
+						auto &get_op = (LogicalGet&)(*child);
 							temp_table_card = std::make_pair(get_op.table_index, get_op.EstimateCardinality(context));
 							table_index = get_op.table_index;
 							break;
 						}
 #if REORDER_DATACHUNK
-						case LogicalOperatorType::LOGICAL_CHUNK_GET: {
-							auto &chunk_get_op = child->Cast<LogicalColumnDataGet>();
+					case LogicalOperatorType::LOGICAL_CHUNK_GET: {
+						auto &chunk_get_op = (LogicalColumnDataGet&)(*child);
 							if (in_clause) {
 								// todo: estimate the cardinality of IN clause
 								in_clause = false;
@@ -89,8 +89,8 @@ unique_ptr<LogicalOperator> ReorderGet::Optimize(unique_ptr<LogicalOperator> pla
 							break;
 						}
 #endif
-						case LogicalOperatorType::LOGICAL_COMPARISON_JOIN: {
-							auto &join_op = child->Cast<LogicalComparisonJoin>();
+					case LogicalOperatorType::LOGICAL_COMPARISON_JOIN: {
+						auto &join_op = (LogicalComparisonJoin&)(*child);
 							if (JoinType::MARK == join_op.join_type || JoinType::SEMI == join_op.join_type) {
 								// todo: estimate the cardinality of IN clause, after modifying STATISTICS_PROPAGATION
 								in_clause = true;
@@ -142,9 +142,9 @@ unique_ptr<LogicalOperator> ReorderGet::Optimize(unique_ptr<LogicalOperator> pla
 				}
 				table_card_order.push_back(temp_table_card);
 				table_index_blocks[table_index] = std::move(child);
-				continue;
-			} else if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == child->type) {
-				auto &join_op = child->Cast<LogicalComparisonJoin>();
+			continue;
+		} else if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == child->type) {
+			auto &join_op = (LogicalComparisonJoin&)(*child);
 				for (auto &cond : join_op.conditions) {
 					auto left_table_index = GetConstTableExpr(cond.left).table_idx;
 					auto right_table_index = GetConstTableExpr(cond.right).table_idx;
@@ -262,11 +262,11 @@ unique_ptr<LogicalOperator> ReorderGet::Optimize(unique_ptr<LogicalOperator> pla
 #ifdef DEBUG
 		D_ASSERT(!joined_table_index.empty());
 #endif
-		tmp_comp_join = make_uniq<LogicalComparisonJoin>(JoinType::INNER);
+		tmp_comp_join = make_unique<LogicalComparisonJoin>(JoinType::INNER);
 		tmp_comp_join->children.push_back(std::move(current_plan));
 		tmp_comp_join->children.push_back(std::move(table_index_blocks[joined_table_index.top()]));
 		joined_table_index.pop();
-		tmp_comp_join->Cast<LogicalComparisonJoin>().conditions = std::move(join_conditions_stack.top());
+		((LogicalComparisonJoin&)(*tmp_comp_join)).conditions = std::move(join_conditions_stack.top());
 		join_conditions_stack.pop();
 		current_plan = std::move(tmp_comp_join);
 	}

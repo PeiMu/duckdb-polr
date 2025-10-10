@@ -162,13 +162,13 @@ void ForeignKeyCenterSplit::CheckJoin(std::vector<std::pair<ColumnBinding, Colum
 	for (const auto &child : op.children) {
 		auto &child_op = child;
 		if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == child_op->type) {
-			auto &join = child_op->Cast<LogicalComparisonJoin>();
+			auto &join = (LogicalComparisonJoin&)(*child_op);
 			const auto &cond = join.conditions;
 
 			for (const auto &cond_it : cond) {
 				// collect the columns used
-				auto &left_colref = cond_it.left->Cast<BoundColumnRefExpression>();
-				auto &right_colref = cond_it.right->Cast<BoundColumnRefExpression>();
+				auto &left_colref = (BoundColumnRefExpression&)(*cond_it.left);
+				auto &right_colref = (BoundColumnRefExpression&)(*cond_it.right);
 
 				join_column_pairs.emplace_back(left_colref.binding, right_colref.binding);
 			}
@@ -184,9 +184,9 @@ void ForeignKeyCenterSplit::CheckSet(fk_map &foreign_key_represent,
 	for (const auto &child : op.children) {
 		auto child_op = child.get();
 		if (LogicalOperatorType::LOGICAL_GET == child_op->type) {
-			auto &get = child_op->Cast<LogicalGet>();
+			auto &get = (LogicalGet&)(*child_op);
 			auto current_table_index = get.table_index;
-			auto &table_entry = get.GetTable()->Cast<TableCatalogEntry>();
+			auto &table_entry = (TableCatalogEntry&)(*get.GetTable());
 
 			used_table_entries.emplace(current_table_index, &table_entry);
 
@@ -195,13 +195,13 @@ void ForeignKeyCenterSplit::CheckSet(fk_map &foreign_key_represent,
 			auto check_foreign_key = [current_table_index, &foreign_key_represent](const ColumnBinding &column,
 			                                                                       const LogicalGet &get,
 			                                                                       TableCatalogEntry &table_entry) {
-				if (current_table_index == column.table_index) {
-					auto physical_idx = get.column_ids[column.column_index];
-					auto logical_idx = table_entry.GetColumns().PhysicalToLogical(PhysicalIndex(physical_idx));
-					bool is_foreign_key = false;
-					for (const auto &constraint : table_entry.GetBoundConstraints()) {
+			if (current_table_index == column.table_index) {
+				auto physical_idx = get.column_ids[column.column_index];
+				auto logical_idx = table_entry.columns.PhysicalToLogical(PhysicalIndex(physical_idx));
+				bool is_foreign_key = false;
+				for (const auto &constraint : table_entry.bound_constraints) {
 						if (ConstraintType::FOREIGN_KEY == constraint->type) {
-							auto &fk = constraint->Cast<BoundForeignKeyConstraint>();
+							auto &fk = (BoundForeignKeyConstraint&)(*constraint);
 							if (auto find_left = std::find_if(
 							        fk.info.fk_keys.begin(), fk.info.fk_keys.end(),
 							        [physical_idx](const PhysicalIndex &idx) { return idx.index == physical_idx; });
@@ -209,10 +209,10 @@ void ForeignKeyCenterSplit::CheckSet(fk_map &foreign_key_represent,
 								is_foreign_key = true;
 								break;
 							}
-						}
 					}
-					foreign_key_represent.emplace(
-					    column, std::make_pair(table_entry.GetColumn(logical_idx).Copy(), is_foreign_key));
+				}
+				foreign_key_represent.emplace(
+				    column, std::make_pair(table_entry.columns.GetColumn(logical_idx).Copy(), is_foreign_key));
 				}
 			};
 
@@ -299,22 +299,22 @@ void ForeignKeyCenterSplit::VisitOperator(LogicalOperator &op) {
 
 	switch (op.type) {
 	case LogicalOperatorType::LOGICAL_PROJECTION:
-		VisitProjection(op.Cast<LogicalProjection>());
+		VisitProjection((LogicalProjection&)(op));
 		break;
 	case LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY:
-		VisitAggregate(op.Cast<LogicalAggregate>());
+		VisitAggregate((LogicalAggregate&)(op));
 		break;
 	case LogicalOperatorType::LOGICAL_COMPARISON_JOIN:
-		VisitComparisonJoin(op.Cast<LogicalComparisonJoin>());
+		VisitComparisonJoin((LogicalComparisonJoin&)(op));
 		break;
 	case LogicalOperatorType::LOGICAL_FILTER:
-		VisitFilter(op.Cast<LogicalFilter>());
+		VisitFilter((LogicalFilter&)(op));
 		break;
 	case LogicalOperatorType::LOGICAL_GET:
-		VisitGet(op.Cast<LogicalGet>());
+		VisitGet((LogicalGet&)(op));
 		break;
 	case LogicalOperatorType::LOGICAL_CHUNK_GET:
-		VisitColumnDataGet(op.Cast<LogicalColumnDataGet>());
+		VisitColumnDataGet((LogicalColumnDataGet&)(op));
 		break;
 	default:
 		break;

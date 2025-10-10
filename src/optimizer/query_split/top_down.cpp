@@ -29,7 +29,7 @@ unique_ptr<LogicalOperator> TopDownSplit::Split(unique_ptr<LogicalOperator> plan
 
 			// check if the children tables have the same name
 			if (nullptr != child_ptr->children[0] && LogicalOperatorType::LOGICAL_GET == child_ptr->children[0]->type) {
-				auto &get_op = child_ptr->children[0]->Cast<LogicalGet>();
+				auto &get_op = (LogicalGet&)(*child_ptr->children[0]);
 				current_table_name = get_op.function.to_string(get_op.bind_data.get());
 				if (prev_table_name == current_table_name) {
 					has_same_table = true;
@@ -39,7 +39,7 @@ unique_ptr<LogicalOperator> TopDownSplit::Split(unique_ptr<LogicalOperator> plan
 				}
 			}
 			if (nullptr != child_ptr->children[1] && LogicalOperatorType::LOGICAL_GET == child_ptr->children[1]->type) {
-				auto &get_op = child_ptr->children[1]->Cast<LogicalGet>();
+				auto &get_op = (LogicalGet&)(*child_ptr->children[1]);
 				current_table_name = get_op.function.to_string(get_op.bind_data.get());
 				if (prev_table_name == current_table_name) {
 					has_same_table = true;
@@ -185,11 +185,11 @@ void TopDownSplit::VisitOperator(LogicalOperator &op) {
 		switch (child->type) {
 			// if the other child node is not CROSS_PRODUCT, JOIN nor FILTER
 		case LogicalOperatorType::LOGICAL_FILTER: {
-			if (top_most && 0 == idx) {
-				// if this is the top most operator, we only check the expr itself
-				top_most = false;
-				// add filter's column usage
-				table_exprs = GetFilterTableExpr(child->Cast<LogicalFilter>());
+		if (top_most && 0 == idx) {
+			// if this is the top most operator, we only check the expr itself
+			top_most = false;
+			// add filter's column usage
+			table_exprs = GetFilterTableExpr((LogicalFilter&)(*child));
 				query_split_index++;
 				child->split_index = query_split_index;
 				break;
@@ -197,7 +197,7 @@ void TopDownSplit::VisitOperator(LogicalOperator &op) {
 #if SPLIT_FILTER
 			// otherwise, it might have MARK join under it
 			if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == child->children[0]->type) {
-				auto &join_op = child->children[0]->Cast<LogicalComparisonJoin>();
+				auto &join_op = (LogicalComparisonJoin&)(*child->children[0]);
 				if (JoinType::SEMI != join_op.join_type && JoinType::MARK != join_op.join_type) {
 					child->split_index = 0;
 					break;
@@ -212,15 +212,15 @@ void TopDownSplit::VisitOperator(LogicalOperator &op) {
 				         LogicalOperatorType::LOGICAL_COMPARISON_JOIN == child->children[0]->type ||
 				         LogicalOperatorType::LOGICAL_CROSS_PRODUCT == child->children[0]->type);
 #endif
-				// add filter's column usage
-				table_exprs = GetFilterTableExpr(child->Cast<LogicalFilter>());
-				// check continuous filter nodes, only split the first one
+			// add filter's column usage
+			table_exprs = GetFilterTableExpr((LogicalFilter&)(*child));
+			// check continuous filter nodes, only split the first one
 				query_split_index++;
 				child->split_index = query_split_index;
 				// add the SEMI or MARK join's column usage
 				auto child_pointer = child->children[0].get();
 				if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == child_pointer->type) {
-					auto &inner_join = child_pointer->Cast<LogicalComparisonJoin>();
+					auto &inner_join = (LogicalComparisonJoin&)(*child_pointer);
 #ifdef DEBUG
 					D_ASSERT(JoinType::SEMI == inner_join.join_type || JoinType::MARK == inner_join.join_type);
 
@@ -235,7 +235,7 @@ void TopDownSplit::VisitOperator(LogicalOperator &op) {
 		case LogicalOperatorType::LOGICAL_COMPARISON_JOIN: {
 			// we skip the SEMI JOIN or MARK JOIN
 			// fixme: may have bugs
-			auto &join_op = child->Cast<LogicalComparisonJoin>();
+			auto &join_op = (LogicalComparisonJoin&)(*child);
 			if (JoinType::SEMI == join_op.join_type || JoinType::MARK == join_op.join_type) {
 				child->split_index = 0;
 				break;
@@ -255,7 +255,7 @@ void TopDownSplit::VisitOperator(LogicalOperator &op) {
 
 			// we need to collect the FILTER table_exprs if we push the FILTER down to the JOIN
 			if (LogicalOperatorType::LOGICAL_FILTER == child->children[0]->type) {
-				auto &inner_filter = child->children[0]->Cast<LogicalFilter>();
+				auto &inner_filter = (LogicalFilter&)(*child->children[0]);
 				auto child_exprs = GetFilterTableExpr(inner_filter);
 				table_exprs.insert(child_exprs.begin(), child_exprs.end());
 			}
@@ -316,17 +316,17 @@ void TopDownSplit::VisitOperator(LogicalOperator &op) {
 
 	// collect table_expr_queue from projection node
 	if (LogicalOperatorType::LOGICAL_PROJECTION == op.type) {
-		AddProjTableExpr(op.Cast<LogicalProjection>());
+		AddProjTableExpr((LogicalProjection&)(op));
 	}
 }
 
 void TopDownSplit::AddTargetTables(LogicalOperator &op) {
 	if (LogicalOperatorType::LOGICAL_GET == op.type) {
-		auto &get_op = op.Cast<LogicalGet>();
+		auto &get_op = (LogicalGet&)(op);
 		auto current_table_index = get_op.table_index;
 		target_tables.emplace(current_table_index);
 	} else if (LogicalOperatorType::LOGICAL_CHUNK_GET == op.type) {
-		auto &chunk_op = op.Cast<LogicalColumnDataGet>();
+		auto &chunk_op = (LogicalColumnDataGet&)(op);
 		auto current_table_index = chunk_op.table_index;
 		target_tables.emplace(current_table_index);
 	}
@@ -386,7 +386,7 @@ void TopDownSplit::AddProjTableExpr(const LogicalProjection &proj_op) {
 	// if it's children is `aggregate` or `group by`, we only check the child op
 	if (nullptr != proj_op.children[0] &&
 	    LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY == proj_op.children[0]->type) {
-		AddAggregateTableExpr(proj_op.children[0]->Cast<LogicalAggregate>());
+		AddAggregateTableExpr((LogicalAggregate&)(*proj_op.children[0]));
 	} else {
 		for (const auto &expr : proj_op.expressions) {
 			VisitExprs(expr, HeaderExprCollector {this});
@@ -405,7 +405,7 @@ void TopDownSplit::AddAggregateTableExpr(const LogicalAggregate &aggregate_op) {
 #ifdef DEBUG
 		D_ASSERT(ExpressionType::BOUND_AGGREGATE == agg_expr->type);
 #endif
-		auto &aggregate_expr = agg_expr->Cast<BoundAggregateExpression>();
+		auto &aggregate_expr = (BoundAggregateExpression&)(*agg_expr);
 		for (const auto &expr : aggregate_expr.children) {
 			VisitExprs(expr, HeaderExprCollector {this});
 		}

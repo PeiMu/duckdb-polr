@@ -644,7 +644,7 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 
 #if MANUAL_EXPLAIN_ANALYZE
 			auto explain_sub_plan = sub_plan->Copy(*this);
-			explain_sub_plan = make_uniq<LogicalExplain>(std::move(explain_sub_plan), ExplainType::EXPLAIN_ANALYZE);
+			explain_sub_plan = make_unique<LogicalExplain>(std::move(explain_sub_plan), ExplainType::EXPLAIN_ANALYZE);
 			explain_sub_plan = optimizer.PostOptimize(std::move(explain_sub_plan));
 #if ENABLE_DEBUG_PRINT
 			// debug: print subquery
@@ -746,7 +746,7 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 			subquery_stmt->plan = std::move(physical_plan);
 
 			// Execute subquery
-			auto prepared_stmt = make_uniq<PreparedStatement>(
+			auto prepared_stmt = make_unique<PreparedStatement>(
 			    shared_from_this(), std::move(subquery_stmt), result->unbound_statement->query,
 			    result->unbound_statement->n_param, result->unbound_statement->named_param_map);
 			duckdb::vector<Value> bound_values;
@@ -888,7 +888,7 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 
 #if MANUAL_EXPLAIN_ANALYZE
 		auto explain_sub_plan = plan->Copy(*this);
-		explain_sub_plan = make_uniq<LogicalExplain>(std::move(explain_sub_plan), ExplainType::EXPLAIN_ANALYZE);
+		explain_sub_plan = make_unique<LogicalExplain>(std::move(explain_sub_plan), ExplainType::EXPLAIN_ANALYZE);
 		explain_sub_plan = optimizer.PostOptimize(std::move(explain_sub_plan));
 #if ENABLE_DEBUG_PRINT
 		// debug: print subquery
@@ -934,7 +934,7 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 		auto explain_whole_plan = subquery_preparer.MergeBack(std::move(whole_plan), plan);
 		if (explain_whole_plan) {
 #if WHOLE_PLAN_EXPLAIN_ANALYZE
-			explain_whole_plan = make_uniq<LogicalExplain>(std::move(explain_whole_plan), ExplainType::EXPLAIN_ANALYZE);
+			explain_whole_plan = make_unique<LogicalExplain>(std::move(explain_whole_plan), ExplainType::EXPLAIN_ANALYZE);
 			subquery_preparer.ExplainAnalyzeSubQuery(
 			    lock, result, std::move(explain_whole_plan), result->catalog_version, result->unbound_statement->query,
 			    result->unbound_statement->n_param, result->unbound_statement->named_param_map);

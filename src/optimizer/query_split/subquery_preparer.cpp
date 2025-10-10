@@ -91,7 +91,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::GenerateProjHead(const unique_ptr<
 	for (const auto &expr_pair : proj_exprs) {
 		ColumnBinding binding = ColumnBinding(expr_pair.table_idx, expr_pair.column_idx);
 		auto col_ref_select_expr =
-		    make_uniq<BoundColumnRefExpression>(expr_pair.column_name, expr_pair.return_type, binding, 0);
+		    make_unique<BoundColumnRefExpression>(expr_pair.column_name, expr_pair.return_type, binding, 0);
 		new_exprs.emplace_back(std::move(col_ref_select_expr));
 #if ENABLE_DEBUG_PRINT
 		// debug
@@ -102,7 +102,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::GenerateProjHead(const unique_ptr<
 #endif
 	}
 
-	auto new_proj_node = make_uniq<LogicalProjection>(binder.GenerateTableIndex(), std::move(new_exprs));
+	auto new_proj_node = make_unique<LogicalProjection>(binder.GenerateTableIndex(), std::move(new_exprs));
 	new_proj_node->AddChild(std::move(subquery));
 
 #if ENABLE_DEBUG_PRINT
@@ -128,11 +128,11 @@ shared_ptr<PreparedStatementData> SubqueryPreparer::AdaptSelect(shared_ptr<Prepa
 	subquery_stmt->unbound_statement = original_stmt_data->unbound_statement->Copy();
 
 	// Modify the SelectNode based of the subquery
-	auto &select_statemet = subquery_stmt->unbound_statement->Cast<SelectStatement>();
+	auto &select_statemet = (SelectStatement&)(*subquery_stmt->unbound_statement);
 #ifdef DEBUG
 	D_ASSERT(QueryNodeType::SELECT_NODE == select_statemet.node->type);
 #endif
-	auto &select_node = select_statemet.node->Cast<SelectNode>();
+	auto &select_node = (SelectNode&)(*select_statemet.node);
 	if (!select_node.select_list.empty()) {
 		select_node.select_list.clear();
 		subquery_stmt->names.clear();
@@ -143,7 +143,7 @@ shared_ptr<PreparedStatementData> SubqueryPreparer::AdaptSelect(shared_ptr<Prepa
 #ifdef DEBUG
 				D_ASSERT(!proj_expr->alias.empty());
 #endif
-				unique_ptr<ColumnRefExpression> new_select_expr = make_uniq<ColumnRefExpression>(proj_expr->alias);
+				unique_ptr<ColumnRefExpression> new_select_expr = make_unique<ColumnRefExpression>(proj_expr->alias);
 				select_node.select_list.emplace_back(std::move(new_select_expr));
 				auto new_name = proj_expr->alias;
 				subquery_stmt->names.emplace_back(new_name);
@@ -159,7 +159,7 @@ int64_t SubqueryPreparer::MergeDataChunk(std::vector<unique_ptr<LogicalOperator>
                                          unique_ptr<ColumnDataCollection> previous_result, idx_t estimated_card) {
 
 	//	unique_ptr<MaterializedQueryResult> result_materialized;
-	//	auto collection = make_uniq<ColumnDataCollection>(Allocator::DefaultAllocator(), types);
+	//	auto collection = make_unique<ColumnDataCollection>(Allocator::DefaultAllocator(), types);
 	// #if TIME_BREAK_DOWN
 	//	auto timer = chrono_tic();
 	// #endif
@@ -167,7 +167,7 @@ int64_t SubqueryPreparer::MergeDataChunk(std::vector<unique_ptr<LogicalOperator>
 	//	if (previous_result->type == QueryResultType::STREAM_RESULT) {
 	//		auto &stream_query = previous_result->Cast<duckdb::StreamQueryResult>();
 	//		result_materialized = stream_query.Materialize();
-	//		collection = make_uniq<ColumnDataCollection>(result_materialized->Collection());
+	//		collection = make_unique<ColumnDataCollection>(result_materialized->Collection());
 	//	} else if (previous_result->type == QueryResultType::MATERIALIZED_RESULT) {
 	//		ColumnDataAppendState append_state;
 	//		collection->InitializeAppend(append_state);
@@ -196,7 +196,7 @@ int64_t SubqueryPreparer::MergeDataChunk(std::vector<unique_ptr<LogicalOperator>
 
 	if (nullptr == chunk_scan) {
 		chunk_scan =
-		    make_uniq<LogicalColumnDataGet>(new_table_idx, previous_result->Types(), std::move(previous_result));
+		    make_unique<LogicalColumnDataGet>(new_table_idx, previous_result->Types(), std::move(previous_result));
 	} else {
 		chunk_scan->table_index = new_table_idx;
 		chunk_scan->chunk_types = previous_result->Types();
@@ -270,9 +270,9 @@ bool SubqueryPreparer::MergeSibling(std::vector<unique_ptr<LogicalOperator>> &cu
 
 void SubqueryPreparer::AddOldTableIndex(const unique_ptr<LogicalOperator> &op) {
 	if (LogicalOperatorType::LOGICAL_GET == op->type) {
-		old_table_idx.emplace(op->Cast<LogicalGet>().table_index);
+		old_table_idx.emplace(((LogicalGet&)(*op)).table_index);
 	} else if (LogicalOperatorType::LOGICAL_CHUNK_GET == op->type) {
-		old_table_idx.emplace(op->Cast<LogicalColumnDataGet>().table_index);
+		old_table_idx.emplace(((LogicalColumnDataGet&)(*op)).table_index);
 	} else if (LogicalOperatorType::LOGICAL_FILTER == op->type) {
 		AddOldTableIndex(std::move(op->children[0]));
 	} else if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == op->type ||
@@ -372,11 +372,11 @@ unique_ptr<LogicalOperator> SubqueryPreparer::UpdateProjHead(unique_ptr<LogicalO
 #ifdef DEBUG
 	D_ASSERT(LogicalOperatorType::LOGICAL_PROJECTION == plan_pointer->type);
 #endif
-	auto &proj_op = plan_pointer->Cast<LogicalProjection>();
+	auto &proj_op = (LogicalProjection&)(*plan_pointer);
 	if (nullptr != proj_op.children[0] &&
 	    LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY == proj_op.children[0]->type) {
 		// update aggregate expressions
-		auto &aggregate_op = proj_op.children[0]->Cast<LogicalAggregate>();
+		auto &aggregate_op = (LogicalAggregate&)(*proj_op.children[0]);
 		auto proj_expr_index = 0;
 
 		// update expr of group by
@@ -398,7 +398,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::UpdateProjHead(unique_ptr<LogicalO
 #ifdef DEBUG
 			D_ASSERT(ExpressionType::BOUND_AGGREGATE == agg_expr->type);
 #endif
-			auto &aggregate_expr = agg_expr->Cast<BoundAggregateExpression>();
+			auto &aggregate_expr = (BoundAggregateExpression&)(*agg_expr);
 			for (auto &expr : aggregate_expr.children) {
 				UpdateExprs(expr, [original_proj_expr, &proj_expr_index](unique_ptr<Expression> &expr) {
 					auto &column_binding = GetRefColumnBinding(expr);
@@ -481,7 +481,7 @@ void SubqueryPreparer::CanonicalizeCrossProduct(unique_ptr<LogicalOperator> &pla
 		LogicalOperator *current_join_pointer = current_pair.first;
 		int current_join_level = current_pair.second;
 		join_pointers_pair.pop();
-		auto &current_join = current_join_pointer->Cast<LogicalComparisonJoin>();
+		auto &current_join = (LogicalComparisonJoin&)(*current_join_pointer);
 
 		std::unordered_set<idx_t> left_cond_table_index;
 		std::unordered_map<idx_t, unique_ptr<LogicalOperator>> table_blocks;
@@ -559,7 +559,7 @@ bool SubqueryPreparer::NeedRewrite(const std::vector<unique_ptr<LogicalOperator>
 	std::function<void(const unique_ptr<LogicalOperator> &op)> collect_cond_tables;
 	collect_cond_tables = [&collect_cond_tables, &table_index_pairs](const unique_ptr<LogicalOperator> &op) {
 		if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == op->type) {
-			auto &join_op = op->Cast<LogicalComparisonJoin>();
+			auto &join_op = (LogicalComparisonJoin&)(*op);
 
 			// collect table pairs form JOIN
 			for (const auto &cond : join_op.conditions) {
@@ -619,7 +619,7 @@ bool SubqueryPreparer::NeedReorder(const std::vector<unique_ptr<LogicalOperator>
 	}
 
 	LogicalOperator *current_join_pointer = subqueries_vec[0].get();
-	auto &current_join = current_join_pointer->Cast<LogicalComparisonJoin>();
+	auto &current_join = (LogicalComparisonJoin&)(*current_join_pointer);
 
 	// collect all table index
 	std::unordered_set<idx_t> table_indexes;
@@ -669,11 +669,11 @@ void SubqueryPreparer::InsertTableBlocks(unique_ptr<LogicalOperator> &op,
                                          unordered_map<idx_t, unique_ptr<LogicalOperator>> &table_blocks,
                                          std::deque<idx_t> &table_blocks_key_order) {
 	if (LogicalOperatorType::LOGICAL_GET == op->type) {
-		auto &get_op = op->Cast<LogicalGet>();
+		auto &get_op = (LogicalGet&)(*op);
 		table_blocks.emplace(get_op.table_index, std::move(op));
 		table_blocks_key_order.emplace_back(get_op.table_index);
 	} else if (LogicalOperatorType::LOGICAL_CHUNK_GET == op->type) {
-		auto &chunk_op = op->Cast<LogicalColumnDataGet>();
+		auto &chunk_op = (LogicalColumnDataGet&)(*op);
 		table_blocks.emplace(chunk_op.table_index, std::move(op));
 		table_blocks_key_order.emplace_back(chunk_op.table_index);
 	} else if (LogicalOperatorType::LOGICAL_FILTER == op->type) {
@@ -684,7 +684,7 @@ void SubqueryPreparer::InsertTableBlocks(unique_ptr<LogicalOperator> &op,
 				if (LogicalOperatorType::LOGICAL_GET != child_op->type)
 					find_get(child_op);
 				else {
-					auto &get_op = child_op->Cast<LogicalGet>();
+					auto &get_op = (LogicalGet&)(*child_op);
 					table_index = get_op.table_index;
 				}
 			}
@@ -693,7 +693,7 @@ void SubqueryPreparer::InsertTableBlocks(unique_ptr<LogicalOperator> &op,
 		table_blocks.emplace(table_index, std::move(op));
 		table_blocks_key_order.emplace_back(table_index);
 	} else if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == op->type) {
-		auto &join_op = op->Cast<LogicalComparisonJoin>();
+		auto &join_op = (LogicalComparisonJoin&)(*op);
 		if (JoinType::SEMI == join_op.join_type) {
 			// insert the SEMI JOIN to `table_blocks`, e.g.
 			// SEMI JION (table.index = CHUNK_GET.0)
@@ -703,12 +703,12 @@ void SubqueryPreparer::InsertTableBlocks(unique_ptr<LogicalOperator> &op,
 			D_ASSERT(LogicalOperatorType::LOGICAL_GET == left_child->type);
 			D_ASSERT(LogicalOperatorType::LOGICAL_CHUNK_GET == right_child->type);
 #endif
-			idx_t table_index = left_child->Cast<LogicalGet>().table_index;
+			idx_t table_index = ((LogicalGet&)(*left_child)).table_index;
 			table_blocks.emplace(table_index, std::move(op));
 			table_blocks_key_order.emplace_back(table_index);
 		} else if (JoinType::INNER == join_op.join_type) {
 			// fixme: should have a smarter decision, but now we only use the right table's index
-			auto &right_table = join_op.children[1]->Cast<LogicalGet>();
+			auto &right_table = (LogicalGet&)(*join_op.children[1]);
 			table_blocks.emplace(right_table.table_index, std::move(op));
 			table_blocks_key_order.emplace_back(right_table.table_index);
 		}
@@ -723,10 +723,10 @@ bool SubqueryPreparer::BlockUsed(const unordered_set<idx_t> &left_cond_table_ind
                                  const unique_ptr<LogicalOperator> &op) {
 	idx_t table_index;
 	if (LogicalOperatorType::LOGICAL_GET == op->type) {
-		auto &get_op = op->Cast<LogicalGet>();
+		auto &get_op = (LogicalGet&)(*op);
 		table_index = get_op.table_index;
 	} else if (LogicalOperatorType::LOGICAL_CHUNK_GET == op->type) {
-		auto &chunk_op = op->Cast<LogicalColumnDataGet>();
+		auto &chunk_op = (LogicalColumnDataGet&)(*op);
 		table_index = chunk_op.table_index;
 	} else if (LogicalOperatorType::LOGICAL_FILTER == op->type) {
 		std::function<void(const unique_ptr<LogicalOperator> &current_op)> find_get;
@@ -735,21 +735,21 @@ bool SubqueryPreparer::BlockUsed(const unordered_set<idx_t> &left_cond_table_ind
 				if (LogicalOperatorType::LOGICAL_GET != child_op->type)
 					find_get(child_op);
 				else {
-					auto &get_op = child_op->Cast<LogicalGet>();
+					auto &get_op = (LogicalGet&)(*child_op);
 					table_index = get_op.table_index;
 				}
 			}
 		};
 		find_get(op);
 	} else if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == op->type) {
-		auto &join_op = op->Cast<LogicalComparisonJoin>();
+		auto &join_op = (LogicalComparisonJoin&)(*op);
 		// fixme: should have a smarter decision
 		if (LogicalOperatorType::LOGICAL_GET == join_op.children[0]->type &&
 		    LogicalOperatorType::LOGICAL_GET == join_op.children[1]->type) {
 			// hint: if all tables have the same name under this JOIN, it shouldn't be a subquery, which means the risk
 			// of use this JOIN block, ref: top_down.cpp, DSB query102_0.sql.
-			auto &left_get = join_op.children[0]->Cast<LogicalGet>();
-			auto &right_get = join_op.children[1]->Cast<LogicalGet>();
+			auto &left_get = (LogicalGet&)(*join_op.children[0]);
+			auto &right_get = (LogicalGet&)(*join_op.children[1]);
 			auto left_table_name = left_get.function.to_string(left_get.bind_data.get());
 			auto right_table_name = right_get.function.to_string(right_get.bind_data.get());
 			if (left_table_name == right_table_name) {
@@ -791,7 +791,7 @@ void SubqueryPreparer::ExplainAnalyzeSubQuery(ClientContextLock &lock,
 	auto explain_subquery_stmt = AdaptSelect(original_stmt_data, explain_sub_plan);
 	auto explain_stmt_data = make_shared<PreparedStatementData>(StatementType::EXPLAIN_STATEMENT);
 	auto explain_stmt =
-	    make_uniq<ExplainStatement>(std::move(explain_subquery_stmt->unbound_statement), ExplainType::EXPLAIN_ANALYZE);
+	    make_unique<ExplainStatement>(std::move(explain_subquery_stmt->unbound_statement), ExplainType::EXPLAIN_ANALYZE);
 	explain_stmt_data->names = {"explain_key", "explain_value"};
 	explain_stmt_data->types = {LogicalType::VARCHAR, LogicalType::VARCHAR};
 	explain_stmt_data->properties.return_type = StatementReturnType::QUERY_RESULT;
@@ -802,7 +802,7 @@ void SubqueryPreparer::ExplainAnalyzeSubQuery(ClientContextLock &lock,
 	PhysicalPlanGenerator explain_physical_planner(context);
 	auto explain_physical_plan = explain_physical_planner.CreatePlan(std::move(explain_sub_plan));
 	explain_stmt_data->plan = std::move(explain_physical_plan);
-	auto explain_prepared_stmt = make_uniq<PreparedStatement>(context.shared_from_this(), std::move(explain_stmt_data),
+	auto explain_prepared_stmt = make_unique<PreparedStatement>(context.shared_from_this(), std::move(explain_stmt_data),
 	                                                          statement_query, n_param, named_param_map);
 	duckdb::vector<Value> explain_bound_values;
 	auto explain_result = explain_prepared_stmt->ExecuteRow(lock, explain_bound_values, false);
@@ -840,7 +840,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 	remove_projection_map = [&remove_projection_map](unique_ptr<LogicalOperator> &op) {
 		switch (op->type) {
 		case LogicalOperatorType::LOGICAL_COMPARISON_JOIN: {
-			auto &join = op->Cast<LogicalComparisonJoin>();
+			auto &join = (LogicalComparisonJoin&)(*op);
 			join.left_projection_map.clear();
 			join.right_projection_map.clear();
 			break;
@@ -876,7 +876,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 #ifdef DEBUG
 	D_ASSERT(LogicalOperatorType::LOGICAL_PROJECTION == last_sub_plan->type);
 #endif
-	auto &proj_node = last_sub_plan->Cast<LogicalProjection>();
+	auto &proj_node = (LogicalProjection&)(*last_sub_plan);
 	//	// 1.1. proj_node's expressions might have new_table_idx
 	//	for (auto &proj_expr : proj_node.expressions) {
 	//		RevertSubqueriesIndex(proj_expr);
@@ -895,7 +895,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 		switch (op->type) {
 		// todo: refactor to a standalone class
 		case LogicalOperatorType::LOGICAL_PROJECTION: {
-			auto &proj = op->Cast<LogicalProjection>();
+			auto &proj = (LogicalProjection&)(*op);
 			auto &exprs = proj.expressions;
 			for (auto &expr : exprs) {
 				RevertSubqueriesIndex(expr);
@@ -903,7 +903,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 			break;
 		}
 		case LogicalOperatorType::LOGICAL_AGGREGATE_AND_GROUP_BY: {
-			auto &aggregate_op = op->Cast<LogicalAggregate>();
+			auto &aggregate_op = (LogicalAggregate&)(*op);
 			// revert expr of group by
 			for (auto &agg_group_expr : aggregate_op.groups) {
 				RevertSubqueriesIndex(agg_group_expr);
@@ -913,7 +913,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 #ifdef DEBUG
 				D_ASSERT(ExpressionType::BOUND_AGGREGATE == agg_expr->type);
 #endif
-				auto &aggregate_expr = agg_expr->Cast<BoundAggregateExpression>();
+				auto &aggregate_expr = (BoundAggregateExpression&)(*agg_expr);
 				for (auto &bound_agg_expr : aggregate_expr.children) {
 					RevertSubqueriesIndex(bound_agg_expr);
 				}
@@ -921,7 +921,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 			break;
 		}
 		case LogicalOperatorType::LOGICAL_COMPARISON_JOIN: {
-			auto &join = op->Cast<LogicalComparisonJoin>();
+			auto &join = (LogicalComparisonJoin&)(*op);
 			auto &conditions = join.conditions;
 			for (auto &cond : conditions) {
 				RevertSubqueriesIndex(cond.left);
@@ -930,7 +930,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 			break;
 		}
 		case LogicalOperatorType::LOGICAL_FILTER: {
-			auto &filter = op->Cast<LogicalFilter>();
+			auto &filter = (LogicalFilter&)(*op);
 			auto &exprs = filter.expressions;
 			std::function<void(unique_ptr<Expression> & expr)> revert_index;
 			revert_index = [this, &revert_index](unique_ptr<Expression> &expr) {
@@ -938,7 +938,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 				case ExpressionType::VALUE_CONSTANT:
 					break;
 				case ExpressionType::BOUND_FUNCTION: {
-					auto &bound_func_expr = expr->Cast<BoundFunctionExpression>();
+					auto &bound_func_expr = (BoundFunctionExpression&)(*expr);
 					for (auto &child_expr : bound_func_expr.children) {
 						revert_index(child_expr);
 					}
@@ -950,14 +950,14 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 				case ExpressionType::COMPARE_LESSTHAN:
 				case ExpressionType::COMPARE_GREATERTHANOREQUALTO:
 				case ExpressionType::COMPARE_LESSTHANOREQUALTO: {
-					auto &compare_expr = expr->Cast<BoundComparisonExpression>();
+					auto &compare_expr = (BoundComparisonExpression&)(*expr);
 					revert_index(compare_expr.left);
 					revert_index(compare_expr.right);
 					break;
 				}
 				case ExpressionType::CONJUNCTION_OR:
 				case ExpressionType::CONJUNCTION_AND: {
-					auto &conjunction_expr = expr->Cast<BoundConjunctionExpression>();
+					auto &conjunction_expr = (BoundConjunctionExpression&)(*expr);
 					for (auto &child_expr : conjunction_expr.children) {
 						revert_index(child_expr);
 					}
@@ -966,7 +966,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 				case ExpressionType::OPERATOR_IS_NULL:
 				case ExpressionType::OPERATOR_IS_NOT_NULL:
 				case ExpressionType::OPERATOR_NOT: {
-					auto &operator_expr = expr->Cast<BoundOperatorExpression>();
+					auto &operator_expr = (BoundOperatorExpression&)(*expr);
 					for (auto &child_expr : operator_expr.children) {
 						revert_index(child_expr);
 					}
@@ -989,7 +989,7 @@ unique_ptr<LogicalOperator> SubqueryPreparer::MergeBack(unique_ptr<LogicalOperat
 		for (auto child_it = op->children.begin(); child_it != op->children.end(); child_it++) {
 			if (LogicalOperatorType::LOGICAL_CHUNK_GET == (*child_it)->type) {
 				// check if it's a new generated one
-				auto &chunk_get = (*child_it)->Cast<LogicalColumnDataGet>();
+				auto &chunk_get = (LogicalColumnDataGet&)(**child_it);
 				auto find_sub_plan = stored_sub_plans.find(chunk_get.table_index);
 				if (find_sub_plan != stored_sub_plans.end()) {
 #ifdef DEBUG
@@ -1016,7 +1016,7 @@ SubqueryPreparer::CheckTableUsage(LogicalOperator *current_join_pointer, unorder
                                   std::unordered_map<idx_t, unique_ptr<LogicalOperator>> &table_blocks,
                                   std::deque<idx_t> &table_blocks_key_order,
                                   std::queue<unique_ptr<LogicalOperator>> &unused_blocks) {
-	auto &current_join = current_join_pointer->Cast<LogicalComparisonJoin>();
+	auto &current_join = (LogicalComparisonJoin&)(*current_join_pointer);
 
 	// 1. collect the left-cond of JOIN, since the right child must be shown in the right-cond
 	for (const auto &cond : current_join.conditions) {
@@ -1033,10 +1033,10 @@ SubqueryPreparer::CheckTableUsage(LogicalOperator *current_join_pointer, unorder
 	auto last_cross_product = current_join_pointer;
 	auto check_pointer = current_join_pointer->children[0].get();
 	while (LogicalOperatorType::LOGICAL_CROSS_PRODUCT == check_pointer->type) {
-		auto &cross_product_op = check_pointer->Cast<LogicalCrossProduct>();
+		auto &cross_product_op = (LogicalCrossProduct&)(*check_pointer);
 		if (LogicalOperatorType::LOGICAL_COMPARISON_JOIN == cross_product_op.children[1]->type) {
 			// skip the right hand JOINs, except SEMI JOIN
-			auto &join_op = cross_product_op.children[1]->Cast<LogicalComparisonJoin>();
+			auto &join_op = (LogicalComparisonJoin&)(*cross_product_op.children[1]);
 			if (JoinType::SEMI != join_op.join_type) {
 				break;
 			}
@@ -1090,7 +1090,7 @@ void SubqueryPreparer::RevertUsedBlocks(LogicalOperator *current_join_pointer, u
 	while (!table_blocks_key_order.empty() &&
 	       LogicalOperatorType::LOGICAL_CROSS_PRODUCT == revert_pointer->children[0]->type) {
 		revert_pointer = revert_pointer->children[0].get();
-		auto &revert_op = revert_pointer->Cast<LogicalCrossProduct>();
+		auto &revert_op = (LogicalCrossProduct&)(*revert_pointer);
 		revert_op.children[1] = std::move(table_blocks[table_blocks_key_order.front()]);
 		table_blocks_key_order.pop_front();
 	}
@@ -1111,7 +1111,7 @@ void SubqueryPreparer::RevertUnusedBlocks(LogicalOperator *current_join_pointer,
 
 	while (!unused_blocks.empty() && LogicalOperatorType::LOGICAL_CROSS_PRODUCT == revert_pointer->children[0]->type) {
 		revert_pointer = revert_pointer->children[0].get();
-		auto &revert_op = revert_pointer->Cast<LogicalCrossProduct>();
+		auto &revert_op = (LogicalCrossProduct&)(*revert_pointer);
 		if (nullptr == revert_op.children[1]) {
 			revert_op.children[1] = std::move(unused_blocks.front());
 			unused_blocks.pop();
