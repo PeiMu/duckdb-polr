@@ -2,11 +2,11 @@
 
 #cd ../ && make clean && GEN=ninja VERBOSE=1 make 2>&1|tee -a compile.log && cd measure
 
-#rm -f ./imdb.db
+#rm -f ./imdb_polr.db
 #
 ## create schema
-#echo "create imdb schema"
-#echo -ne ".read imdb_schema.sql" | duckdb ./imdb.db
+#echo "create imdb_polr schema"
+#echo -ne ".read imdb_schema.sql" | duckdb ./imdb_polr.db
 #
 ## load imdb
 #for table in name aka_name kind_type title aka_title char_name role_type cast_info comp_cast_type company_name company_type complete_cast info_type keyword link_type movie_companies movie_info movie_info_idx movie_keyword movie_link person_info
@@ -14,7 +14,7 @@
 #  echo "duckdb load table from ${table}.tbl"
 #  command="copy ${table} from '/home/pei/Project/benchmarks/imdb_job-postgres/csv/${table}.csv' (quote '\"', escape '\\');"
 #  echo $command
-#  echo -ne "${command}" | duckdb ./imdb.db
+#  echo -ne "${command}" | duckdb ./imdb_polr.db
 #done
 
 # execute queries
@@ -30,7 +30,7 @@ mkdir -p job_result/
 for i in $(eval echo {1.."${iteration}"}); do
   for sql in "${dir}"/*; do
     echo "execute ${sql}" 2>&1|tee -a ${log_name};
-    echo -ne ".read ${sql}" | duckdb ./imdb.db 2>&1|tee -a ${log_name};
+    echo -ne ".read ${sql}" | duckdb ./imdb_polr.db 2>&1|tee -a ${log_name};
   done
 done
 

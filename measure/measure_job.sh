@@ -7,6 +7,7 @@ echo "official" 2>&1|tee -a compile.log
 cd ../ && make clean && GEN=ninja VERBOSE=1 make >> compile.log 2>&1 && cd measure && bash ./hyperfine_in_mem_job.sh official nan
 
 # enable polar
+echo "polr" 2>&1|tee -a compile.log
 sed -i 's/bool enable_polr = false;/bool enable_polr = true;/' ../src/include/duckdb/main/client_config.hpp
 sed -i 's/bool bushy_polr = false;/bool bushy_polr = true;/' ../src/include/duckdb/main/client_config.hpp
 

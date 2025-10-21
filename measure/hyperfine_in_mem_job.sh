@@ -10,7 +10,7 @@ iteration=10
 
 for sql in "${dir}"/*.sql; do
 #  echo "hyperfine run ${sql}" 2>&1|tee -a ${log_name}
-  hyperfine --warmup 5 --runs ${iteration} --export-csv temp.csv "duckdb -c \".read ${sql}\" ./imdb.db"
+  hyperfine --warmup 5 --runs ${iteration} --export-csv temp.csv "duckdb -c \".read ${sql}\" ./imdb_polr.db"
   cat temp.csv >> ${log_name}
 done
 
