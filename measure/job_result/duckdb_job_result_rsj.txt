@@ -1,5 +1,4 @@
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/10a.sql
-Doesn't support type 0 yet!
 ┌─────────────────────────────┬───────────────┐
 │ uncredited_voiced_character │ russian_movie │
 │           varchar           │    varchar    │
@@ -11,7 +10,6 @@ Error: near line 1: Parser Error: syntax error at or near "2"
 LINE 1: 2��]���DUCK@�
         ^
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/10b.sql
-Doesn't support type 0 yet!
 ┌───────────┬─────────────────────────────────┐
 │ character │ russian_mov_with_actor_producer │
 │  varchar  │             varchar             │
@@ -19,7 +17,6 @@ Doesn't support type 0 yet!
 │           │                                 │
 └───────────┴─────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/10c.sql
-Doesn't support type 0 yet!
 ┌───────────┬──────────────────────────────┐
 │ character │ movie_with_american_producer │
 │  varchar  │           varchar            │
@@ -27,7 +24,6 @@ Doesn't support type 0 yet!
 │ Himself   │ Evil Eyes: Behind the Scenes │
 └───────────┴──────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/11a.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────────────┬─────────────────────────┐
 │  from_company   │ movie_link_type │ non_polish_sequel_movie │
 │     varchar     │     varchar     │         varchar         │
@@ -35,7 +31,6 @@ Doesn't support type 0 yet!
 │ Churchill Films │ followed by     │ Batman Beyond           │
 └─────────────────┴─────────────────┴─────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/11b.sql
-Doesn't support type 0 yet!
 ┌────────────────────────────┬─────────────────┬───────────────┐
 │        from_company        │ movie_link_type │ sequel_movie  │
 │          varchar           │     varchar     │    varchar    │
@@ -43,7 +38,6 @@ Doesn't support type 0 yet!
 │ Filmlance International AB │ follows         │ The Money Man │
 └────────────────────────────┴─────────────────┴───────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/11c.sql
-Doesn't support type 0 yet!
 ┌─────────────────────────────────────┬─────────────────────────────────────┬─────────────────────┐
 │            from_company             │           production_note           │ movie_based_on_book │
 │               varchar               │               varchar               │       varchar       │
@@ -51,7 +45,6 @@ Doesn't support type 0 yet!
 │ 20th Century Fox Home Entertainment │ (1997-2002) (worldwide) (all media) │ 24                  │
 └─────────────────────────────────────┴─────────────────────────────────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/11d.sql
-Doesn't support type 0 yet!
 ┌──────────────┬──────────────────┬───────────────────────────────────────┐
 │ from_company │ production_note  │          movie_based_on_book          │
 │   varchar    │     varchar      │                varchar                │
@@ -59,7 +52,6 @@ Doesn't support type 0 yet!
 │ 13th Street  │ (1954) (UK) (TV) │ ...denn sie wissen nicht, was sie tun │
 └──────────────┴──────────────────┴───────────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/12a.sql
-Doesn't support type 0 yet!
 ┌──────────────────────────┬─────────┬────────────────────┐
 │      movie_company       │ rating  │ drama_horror_movie │
 │         varchar          │ varchar │      varchar       │
@@ -67,7 +59,6 @@ Doesn't support type 0 yet!
 │ 10th Grade Reunion Films │ 8.1     │ 3:20               │
 └──────────────────────────┴─────────┴────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/12b.sql
-Doesn't support type 0 yet!
 ┌─────────┬────────────────────────────┐
 │ budget  │    unsuccsessful_movie     │
 │ varchar │          varchar           │
@@ -75,7 +66,6 @@ Doesn't support type 0 yet!
 │ $10,000 │ Birdemic: Shock and Terror │
 └─────────┴────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/12c.sql
-Doesn't support type 0 yet!
 ┌────────────────┬─────────┬──────────────────┐
 │ movie_company  │ rating  │ mainstream_movie │
 │    varchar     │ varchar │     varchar      │
@@ -83,7 +73,6 @@ Doesn't support type 0 yet!
 │ "Oh That Gus!" │ 7.1     │ $1.11            │
 └────────────────┴─────────┴──────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/13a.sql
-Doesn't support type 0 yet!
 ┌──────────────────────────┬─────────┬──────────────┐
 │       release_date       │ rating  │ german_movie │
 │         varchar          │ varchar │   varchar    │
@@ -91,7 +80,6 @@ Doesn't support type 0 yet!
 │ Afghanistan:24 June 2012 │ 1.0     │ &Me          │
 └──────────────────────────┴─────────┴──────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/13b.sql
-Doesn't support type 0 yet!
 ┌───────────────────┬─────────┬─────────────────────┐
 │ producing_company │ rating  │ movie_about_winning │
 │      varchar      │ varchar │       varchar       │
@@ -99,7 +87,6 @@ Doesn't support type 0 yet!
 │ 501audio          │ 1.8     │ 5 Time Champion     │
 └───────────────────┴─────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/13c.sql
-Doesn't support type 0 yet!
 ┌───────────────────┬─────────┬─────────────────────┐
 │ producing_company │ rating  │ movie_about_winning │
 │      varchar      │ varchar │       varchar       │
@@ -107,7 +94,6 @@ Doesn't support type 0 yet!
 │ DL Sites          │ 1.8     │ Champion            │
 └───────────────────┴─────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/13d.sql
-Doesn't support type 0 yet!
 ┌───────────────────┬─────────┬───────────────┐
 │ producing_company │ rating  │     movie     │
 │      varchar      │ varchar │    varchar    │
@@ -115,7 +101,6 @@ Doesn't support type 0 yet!
 │ "O" Films         │ 1.0     │ #54 Meets #47 │
 └───────────────────┴─────────┴───────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/14a.sql
-Doesn't support type 0 yet!
 ┌─────────┬─────────────────────┐
 │ rating  │ northern_dark_movie │
 │ varchar │       varchar       │
@@ -123,7 +108,6 @@ Doesn't support type 0 yet!
 │ 1.0     │ $lowdown            │
 └─────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/14b.sql
-Doesn't support type 0 yet!
 ┌─────────┬─────────────────────────┐
 │ rating  │ western_dark_production │
 │ varchar │         varchar         │
@@ -131,7 +115,6 @@ Doesn't support type 0 yet!
 │ 6.4     │ Of Dolls and Murder     │
 └─────────┴─────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/14c.sql
-Doesn't support type 0 yet!
 ┌─────────┬────────────────────────────────┐
 │ rating  │ north_european_dark_production │
 │ varchar │            varchar             │
@@ -139,7 +122,6 @@ Doesn't support type 0 yet!
 │ 1.0     │ $lowdown                       │
 └─────────┴────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/15a.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬──────────────────────────────────────┐
 │  release_date   │            internet_movie            │
 │     varchar     │               varchar                │
@@ -147,7 +129,6 @@ Doesn't support type 0 yet!
 │ USA:1 June 2007 │ Battlestar Galactica: The Resistance │
 └─────────────────┴──────────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/15b.sql
-Doesn't support type 0 yet!
 ┌───────────────────┬───────────────────────┐
 │   release_date    │     youtube_movie     │
 │      varchar      │        varchar        │
@@ -155,7 +136,6 @@ Doesn't support type 0 yet!
 │ USA:27 April 2007 │ RoboCop vs Terminator │
 └───────────────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/15c.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬────────────────────────────────┐
 │   release_date   │ modern_american_internet_movie │
 │     varchar      │            varchar             │
@@ -163,7 +143,6 @@ Doesn't support type 0 yet!
 │ USA:1 April 2003 │ 24: Day Six - Debrief          │
 └──────────────────┴────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/15d.sql
-Doesn't support type 0 yet!
 ┌────────────────────────┬──────────────────────┐
 │       aka_title        │ internet_movie_title │
 │        varchar         │       varchar        │
@@ -171,7 +150,6 @@ Doesn't support type 0 yet!
 │ (Not So) Instant Photo │ 06/05                │
 └────────────────────────┴──────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/16a.sql
-Doesn't support type 0 yet!
 ┌──────────────────────┬───────────────────────────────────┐
 │ cool_actor_pseudonym │      series_named_after_char      │
 │       varchar        │              varchar              │
@@ -179,7 +157,6 @@ Doesn't support type 0 yet!
 │ Adams, Stan          │ Carol Burnett vs. Anthony Perkins │
 └──────────────────────┴───────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/16b.sql
-Doesn't support type 0 yet!
 ┌──────────────────────┬─────────────────────────┐
 │ cool_actor_pseudonym │ series_named_after_char │
 │       varchar        │         varchar         │
@@ -187,7 +164,6 @@ Doesn't support type 0 yet!
 │ !!!, Toy             │ & Teller                │
 └──────────────────────┴─────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/16c.sql
-Doesn't support type 0 yet!
 ┌───────────────────────┬─────────────────────────┐
 │ cool_actor_pseudonym  │ series_named_after_char │
 │        varchar        │         varchar         │
@@ -195,7 +171,6 @@ Doesn't support type 0 yet!
 │ "Brooklyn" Tony Danza │ (#1.5)                  │
 └───────────────────────┴─────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/16d.sql
-Doesn't support type 0 yet!
 ┌───────────────────────┬─────────────────────────┐
 │ cool_actor_pseudonym  │ series_named_after_char │
 │        varchar        │         varchar         │
@@ -203,7 +178,6 @@ Doesn't support type 0 yet!
 │ "Brooklyn" Tony Danza │ (#1.5)                  │
 └───────────────────────┴─────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/17a.sql
-Doesn't support type 0 yet!
 ┌────────────────────────────────────┬─────────┐
 │ member_in_charnamed_american_movie │   a1    │
 │              varchar               │ varchar │
@@ -211,7 +185,6 @@ Doesn't support type 0 yet!
 │ B, Khaz                            │ B, Khaz │
 └────────────────────────────────────┴─────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/17b.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────┬───────────────┐
 │ member_in_charnamed_movie │      a1       │
 │          varchar          │    varchar    │
@@ -219,7 +192,6 @@ Doesn't support type 0 yet!
 │ Z'Dar, Robert             │ Z'Dar, Robert │
 └───────────────────────────┴───────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/17c.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────┬──────────────────┐
 │ member_in_charnamed_movie │        a1        │
 │          varchar          │     varchar      │
@@ -227,7 +199,6 @@ Doesn't support type 0 yet!
 │ X'Volaitis, John          │ X'Volaitis, John │
 └───────────────────────────┴──────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/17d.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────┐
 │ member_in_charnamed_movie │
 │          varchar          │
@@ -235,7 +206,6 @@ Doesn't support type 0 yet!
 │ Abrahamsson, Bertil       │
 └───────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/17e.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────┐
 │ member_in_charnamed_movie │
 │          varchar          │
@@ -243,7 +213,6 @@ Doesn't support type 0 yet!
 │ $hort, Too                │
 └───────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/17f.sql
-Doesn't support type 0 yet!
 ┌─────────────────────────────────┐
 │    member_in_charnamed_movie    │
 │             varchar             │
@@ -251,7 +220,6 @@ Doesn't support type 0 yet!
 │ 'El Galgo PornoStar', Blanquito │
 └─────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/18a.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬───────────────────────┐
 │ movie_budget │ movie_votes │      movie_title      │
 │   varchar    │   varchar   │        varchar        │
@@ -259,7 +227,6 @@ Doesn't support type 0 yet!
 │ $1,000       │ 10          │ 40 Days and 40 Nights │
 └──────────────┴─────────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/18b.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬─────────────┐
 │ movie_budget │ movie_votes │ movie_title │
 │   varchar    │   varchar   │   varchar   │
@@ -267,7 +234,6 @@ Doesn't support type 0 yet!
 │ Horror       │ 8.1         │ Agorable    │
 └──────────────┴─────────────┴─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/18c.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬─────────────┐
 │ movie_budget │ movie_votes │ movie_title │
 │   varchar    │   varchar   │   varchar   │
@@ -275,7 +241,6 @@ Doesn't support type 0 yet!
 │ Action       │ 10          │ #PostModem  │
 └──────────────┴─────────────┴─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/19a.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬──────────────┐
 │ voicing_actress  │ voiced_movie │
 │     varchar      │   varchar    │
@@ -283,7 +248,6 @@ Doesn't support type 0 yet!
 │ Angeline, Moriah │ Blue Harvest │
 └──────────────────┴──────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/19b.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬───────────────┐
 │ voicing_actress │ kung_fu_panda │
 │     varchar     │    varchar    │
@@ -291,7 +255,6 @@ Doesn't support type 0 yet!
 │ Jolie, Angelina │ Kung Fu Panda │
 └─────────────────┴───────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/19c.sql
-Doesn't support type 0 yet!
 ┌────────────────────┬───────────────────────────┐
 │  voicing_actress   │   jap_engl_voiced_movie   │
 │      varchar       │          varchar          │
@@ -299,7 +262,6 @@ Doesn't support type 0 yet!
 │ Alborg, Ana Esther │ .hack//Akusei heni vol. 2 │
 └────────────────────┴───────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/19d.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬───────────────────────┐
 │ voicing_actress │ jap_engl_voiced_movie │
 │     varchar     │        varchar        │
@@ -307,7 +269,6 @@ Doesn't support type 0 yet!
 │ Aaron, Caroline │ $9.99                 │
 └─────────────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/1a.sql
-Doesn't support type 0 yet!
 ┌────────────────────────────────────────────────────┬────────────────────┬────────────┐
 │                  production_note                   │    movie_title     │ movie_year │
 │                      varchar                       │      varchar       │   int32    │
@@ -315,7 +276,6 @@ Doesn't support type 0 yet!
 │ (A Warner Bros.-First National Picture) (presents) │ A Clockwork Orange │       1934 │
 └────────────────────────────────────────────────────┴────────────────────┴────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/1b.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────────────────┬────────────────┬────────────┐
 │            production_note            │  movie_title   │ movie_year │
 │                varchar                │    varchar     │   int32    │
@@ -323,7 +283,6 @@ Doesn't support type 0 yet!
 │ (Set Decoration Rentals) (uncredited) │ Disaster Movie │       2008 │
 └───────────────────────────────────────┴────────────────┴────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/1c.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬──────────────┬────────────┐
 │ production_note │ movie_title  │ movie_year │
 │     varchar     │   varchar    │   int32    │
@@ -331,7 +290,6 @@ Doesn't support type 0 yet!
 │ (co-production) │ Intouchables │       2011 │
 └─────────────────┴──────────────┴────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/1d.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────────────────┬────────────────┬────────────┐
 │            production_note            │  movie_title   │ movie_year │
 │                varchar                │    varchar     │   int32    │
@@ -339,7 +297,6 @@ Doesn't support type 0 yet!
 │ (Set Decoration Rentals) (uncredited) │ Disaster Movie │       2004 │
 └───────────────────────────────────────┴────────────────┴────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/20a.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────────┐
 │ complete_downey_ironman_movie │
 │            varchar            │
@@ -347,7 +304,6 @@ Doesn't support type 0 yet!
 │ Disaster Movie                │
 └───────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/20b.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────────┐
 │ complete_downey_ironman_movie │
 │            varchar            │
@@ -355,7 +311,6 @@ Doesn't support type 0 yet!
 │ Iron Man                      │
 └───────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/20c.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────────────────────────┐
 │   cast_member   │ complete_dynamic_hero_movie │
 │     varchar     │           varchar           │
@@ -363,7 +318,6 @@ Doesn't support type 0 yet!
 │ Abell, Alistair │ ...And Then I...            │
 └─────────────────┴─────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/21a.sql
-Doesn't support type 0 yet!
 ┌─────────────────────────┬─────────────┬─────────────────────────────────────┐
 │      company_name       │  link_type  │          western_follow_up          │
 │         varchar         │   varchar   │               varchar               │
@@ -371,7 +325,6 @@ Doesn't support type 0 yet!
 │ Det Danske Filminstitut │ followed by │ Der Serienkiller - Klinge des Todes │
 └─────────────────────────┴─────────────┴─────────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/21b.sql
-Doesn't support type 0 yet!
 ┌────────────────────────────┬─────────────┬──────────────────┐
 │        company_name        │  link_type  │ german_follow_up │
 │          varchar           │   varchar   │     varchar      │
@@ -379,7 +332,6 @@ Doesn't support type 0 yet!
 │ Filmlance International AB │ followed by │ Hämndens pris    │
 └────────────────────────────┴─────────────┴──────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/21c.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────────┬───────────────────┐
 │  company_name   │  link_type  │ western_follow_up │
 │     varchar     │   varchar   │      varchar      │
@@ -387,7 +339,6 @@ Doesn't support type 0 yet!
 │ Churchill Films │ followed by │ Batman Beyond     │
 └─────────────────┴─────────────┴───────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/22a.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────┬───────────────────────┐
 │  movie_company  │ rating  │ western_violent_movie │
 │     varchar     │ varchar │        varchar        │
@@ -395,7 +346,6 @@ Doesn't support type 0 yet!
 │ 01 Distribution │ 2.1     │ 12 Rounds             │
 └─────────────────┴─────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/22b.sql
-Doesn't support type 0 yet!
 ┌──────────────────────────────────────┬─────────┬───────────────────────┐
 │            movie_company             │ rating  │ western_violent_movie │
 │               varchar                │ varchar │        varchar        │
@@ -403,7 +353,6 @@ Doesn't support type 0 yet!
 │ Boll Kino Beteiligungs GmbH & Co. KG │ 3.0     │ A Small Act           │
 └──────────────────────────────────────┴─────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/22c.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────┬───────────────────────┐
 │  movie_company  │ rating  │ western_violent_movie │
 │     varchar     │ varchar │        varchar        │
@@ -411,7 +360,6 @@ Doesn't support type 0 yet!
 │ 01 Distribution │ 1.9     │ (#1.1)                │
 └─────────────────┴─────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/22d.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────┬───────────────────────┐
 │  movie_company  │ rating  │ western_violent_movie │
 │     varchar     │ varchar │        varchar        │
@@ -419,7 +367,6 @@ Doesn't support type 0 yet!
 │ 01 Distribution │ 1.6     │ (#1.1)                │
 └─────────────────┴─────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/23a.sql
-Doesn't support type 0 yet!
 ┌────────────┬────────────────────────────┐
 │ movie_kind │ complete_us_internet_movie │
 │  varchar   │          varchar           │
@@ -427,7 +374,6 @@ Doesn't support type 0 yet!
 │ movie      │ The Analysts               │
 └────────────┴────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/23b.sql
-Doesn't support type 0 yet!
 ┌────────────┬───────────────────────────────┐
 │ movie_kind │ complete_nerdy_internet_movie │
 │  varchar   │            varchar            │
@@ -435,7 +381,6 @@ Doesn't support type 0 yet!
 │ movie      │ The Big Mope                  │
 └────────────┴───────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/23c.sql
-Doesn't support type 0 yet!
 ┌────────────┬────────────────────────────┐
 │ movie_kind │ complete_us_internet_movie │
 │  varchar   │          varchar           │
@@ -443,7 +388,6 @@ Doesn't support type 0 yet!
 │ movie      │ Dirt Merchant              │
 └────────────┴────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/24a.sql
-Doesn't support type 0 yet!
 ┌───────────────────┬──────────────────────┬─────────────────────────────┐
 │ voiced_char_name  │ voicing_actress_name │ voiced_action_movie_jap_eng │
 │      varchar      │       varchar        │           varchar           │
@@ -451,7 +395,6 @@ Doesn't support type 0 yet!
 │ Additional Voices │ Baker, Andrea        │ Baiohazâdo 6                │
 └───────────────────┴──────────────────────┴─────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/24b.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬──────────────────────┬─────────────────┐
 │ voiced_char_name │ voicing_actress_name │  kung_fu_panda  │
 │     varchar      │       varchar        │     varchar     │
@@ -459,7 +402,6 @@ Doesn't support type 0 yet!
 │ Tigress          │ Jolie, Angelina      │ Kung Fu Panda 2 │
 └──────────────────┴──────────────────────┴─────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/25a.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬─────────────────┬──────────────────────────────────┐
 │ movie_budget │ movie_votes │   male_writer   │       violent_movie_title        │
 │   varchar    │   varchar   │     varchar     │             varchar              │
@@ -467,7 +409,6 @@ Doesn't support type 0 yet!
 │ Horror       │ 10          │ Abdallah, Damon │ -- And Now the Screaming Starts! │
 └──────────────┴─────────────┴─────────────────┴──────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/25b.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬────────────────────┬─────────────────────┐
 │ movie_budget │ movie_votes │    male_writer     │ violent_movie_title │
 │   varchar    │   varchar   │      varchar       │       varchar       │
@@ -475,7 +416,6 @@ Doesn't support type 0 yet!
 │ Horror       │ 138         │ Campbell, Jeremiah │ Vampire Boys        │
 └──────────────┴─────────────┴────────────────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/25c.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬───────────────────┬─────────────────────┐
 │ movie_budget │ movie_votes │    male_writer    │ violent_movie_title │
 │   varchar    │   varchar   │      varchar      │       varchar       │
@@ -483,7 +423,6 @@ Doesn't support type 0 yet!
 │ Action       │ 10          │ Aakeson, Kim Fupz │ $                   │
 └──────────────┴─────────────┴───────────────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/26a.sql
-Doesn't support type 0 yet!
 ┌────────────────┬─────────┬─────────────────┬─────────────────────┐
 │ character_name │ rating  │  playing_actor  │ complete_hero_movie │
 │    varchar     │ varchar │     varchar     │       varchar       │
@@ -491,7 +430,6 @@ Doesn't support type 0 yet!
 │ 'Agua' Man     │ 7.1     │ Acereda, Hermie │ 3:10 to Yuma        │
 └────────────────┴─────────┴─────────────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/26b.sql
-Doesn't support type 0 yet!
 ┌────────────────┬─────────┬─────────────────────┐
 │ character_name │ rating  │ complete_hero_movie │
 │    varchar     │ varchar │       varchar       │
@@ -499,7 +437,6 @@ Doesn't support type 0 yet!
 │ Bank Manager   │ 8.2     │ Inception           │
 └────────────────┴─────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/26c.sql
-Doesn't support type 0 yet!
 ┌────────────────┬─────────┬─────────────────────┐
 │ character_name │ rating  │ complete_hero_movie │
 │    varchar     │ varchar │       varchar       │
@@ -507,7 +444,6 @@ Doesn't support type 0 yet!
 │ 'Agua' Man     │ 1.9     │ 12 Rounds           │
 └────────────────┴─────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/27a.sql
-Doesn't support type 0 yet!
 ┌─────────────────────────┬─────────────┬─────────────────────────┐
 │    producing_company    │  link_type  │ complete_western_sequel │
 │         varchar         │   varchar   │         varchar         │
@@ -515,7 +451,6 @@ Doesn't support type 0 yet!
 │ Det Danske Filminstitut │ followed by │ Spår i mörker           │
 └─────────────────────────┴─────────────┴─────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/27b.sql
-Doesn't support type 0 yet!
 ┌────────────────────────────┬─────────────┬─────────────────────────┐
 │     producing_company      │  link_type  │ complete_western_sequel │
 │          varchar           │   varchar   │         varchar         │
@@ -523,7 +458,6 @@ Doesn't support type 0 yet!
 │ Filmlance International AB │ followed by │ Vita nätter             │
 └────────────────────────────┴─────────────┴─────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/27c.sql
-Doesn't support type 0 yet!
 ┌─────────────────────────┬─────────────┬─────────────────────────┐
 │    producing_company    │  link_type  │ complete_western_sequel │
 │         varchar         │   varchar   │         varchar         │
@@ -531,7 +465,6 @@ Doesn't support type 0 yet!
 │ Det Danske Filminstitut │ followed by │ Spår i mörker           │
 └─────────────────────────┴─────────────┴─────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/28a.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬─────────┬──────────────────────────┐
 │  movie_company   │ rating  │ complete_euro_dark_movie │
 │     varchar      │ varchar │         varchar          │
@@ -539,7 +472,6 @@ Doesn't support type 0 yet!
 │ 01 Distribuzione │ 2.9     │ (#1.1)                   │
 └──────────────────┴─────────┴──────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/28b.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬─────────┬──────────────────────────┐
 │  movie_company   │ rating  │ complete_euro_dark_movie │
 │     varchar      │ varchar │         varchar          │
@@ -547,7 +479,6 @@ Doesn't support type 0 yet!
 │ 20th Century Fox │ 6.6     │ (#1.1)                   │
 └──────────────────┴─────────┴──────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/28c.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬─────────┬──────────────────────────┐
 │  movie_company   │ rating  │ complete_euro_dark_movie │
 │     varchar      │ varchar │         varchar          │
@@ -555,7 +486,6 @@ Doesn't support type 0 yet!
 │ 01 Distribuzione │ 1.9     │ (#1.1)                   │
 └──────────────────┴─────────┴──────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/29a.sql
-Doesn't support type 0 yet!
 ┌─────────────┬─────────────────┬──────────────────┐
 │ voiced_char │ voicing_actress │ voiced_animation │
 │   varchar   │     varchar     │     varchar      │
@@ -563,7 +493,6 @@ Doesn't support type 0 yet!
 │ Queen       │ Andrews, Julie  │ Shrek 2          │
 └─────────────┴─────────────────┴──────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/29b.sql
-Doesn't support type 0 yet!
 ┌─────────────┬─────────────────┬──────────────────┐
 │ voiced_char │ voicing_actress │ voiced_animation │
 │   varchar   │     varchar     │     varchar      │
@@ -571,7 +500,6 @@ Doesn't support type 0 yet!
 │ Queen       │ Andrews, Julie  │ Shrek 2          │
 └─────────────┴─────────────────┴──────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/29c.sql
-Doesn't support type 0 yet!
 ┌─────────────┬─────────────────┬──────────────────┐
 │ voiced_char │ voicing_actress │ voiced_animation │
 │   varchar   │     varchar     │     varchar      │
@@ -579,7 +507,6 @@ Doesn't support type 0 yet!
 │ Lola        │ Andrews, Julie  │ Hoodwinked!      │
 └─────────────┴─────────────────┴──────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/2a.sql
-Doesn't support type 0 yet!
 ┌─────────────┐
 │ movie_title │
 │   varchar   │
@@ -587,7 +514,6 @@ Doesn't support type 0 yet!
 │ 'Doc'       │
 └─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/2b.sql
-Doesn't support type 0 yet!
 ┌─────────────┐
 │ movie_title │
 │   varchar   │
@@ -595,7 +521,6 @@ Doesn't support type 0 yet!
 │ 'Doc'       │
 └─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/2c.sql
-Doesn't support type 0 yet!
 ┌─────────────┐
 │ movie_title │
 │   varchar   │
@@ -603,7 +528,6 @@ Doesn't support type 0 yet!
 │             │
 └─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/2d.sql
-Doesn't support type 0 yet!
 ┌─────────────┐
 │ movie_title │
 │   varchar   │
@@ -611,7 +535,6 @@ Doesn't support type 0 yet!
 │ & Teller    │
 └─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/30a.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬──────────────┬────────────────────────┐
 │ movie_budget │ movie_votes │    writer    │ complete_violent_movie │
 │   varchar    │   varchar   │   varchar    │        varchar         │
@@ -619,7 +542,6 @@ Doesn't support type 0 yet!
 │ Horror       │ 100356      │ Abrams, J.J. │ 16 Blocks              │
 └──────────────┴─────────────┴──────────────┴────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/30b.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬─────────────────┬─────────────────────┐
 │ movie_budget │ movie_votes │     writer      │ complete_gore_movie │
 │   varchar    │   varchar   │     varchar     │       varchar       │
@@ -627,7 +549,6 @@ Doesn't support type 0 yet!
 │ Horror       │ 194782      │ Shannon, Damian │ Freddy vs. Jason    │
 └──────────────┴─────────────┴─────────────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/30c.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬──────────────────┬────────────────────────┐
 │ movie_budget │ movie_votes │      writer      │ complete_violent_movie │
 │   varchar    │   varchar   │     varchar      │        varchar         │
@@ -635,7 +556,6 @@ Doesn't support type 0 yet!
 │ Action       │ 100356      │ Abernathy, Lewis │ $                      │
 └──────────────┴─────────────┴──────────────────┴────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/31a.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬────────────┬────────────────────────┐
 │ movie_budget │ movie_votes │   writer   │ violent_liongate_movie │
 │   varchar    │   varchar   │  varchar   │        varchar         │
@@ -643,7 +563,6 @@ Doesn't support type 0 yet!
 │ Horror       │ 1040        │ Agnew, Jim │ 2001 Maniacs           │
 └──────────────┴─────────────┴────────────┴────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/31b.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬──────────────────────┬────────────────────────┐
 │ movie_budget │ movie_votes │        writer        │ violent_liongate_movie │
 │   varchar    │   varchar   │       varchar        │        varchar         │
@@ -651,7 +570,6 @@ Doesn't support type 0 yet!
 │ Horror       │ 129755      │ Bousman, Darren Lynn │ Saw                    │
 └──────────────┴─────────────┴──────────────────────┴────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/31c.sql
-Doesn't support type 0 yet!
 ┌──────────────┬─────────────┬───────────────┬────────────────────────┐
 │ movie_budget │ movie_votes │    writer     │ violent_liongate_movie │
 │   varchar    │   varchar   │    varchar    │        varchar         │
@@ -659,7 +577,6 @@ Doesn't support type 0 yet!
 │ Action       │ 1008        │ Abraham, Brad │ 11:14                  │
 └──────────────┴─────────────┴───────────────┴────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/32a.sql
-Doesn't support type 0 yet!
 ┌───────────┬─────────────┬──────────────┐
 │ link_type │ first_movie │ second_movie │
 │  varchar  │   varchar   │   varchar    │
@@ -667,7 +584,6 @@ Doesn't support type 0 yet!
 │           │             │              │
 └───────────┴─────────────┴──────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/32b.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────────┬──────────────┬────────────────────────────┐
 │           link_type           │ first_movie  │        second_movie        │
 │            varchar            │   varchar    │          varchar           │
@@ -675,7 +591,6 @@ Doesn't support type 0 yet!
 │ alternate language version of │ 12 oz. Mouse │ 'Angel': Season 2 Overview │
 └───────────────────────────────┴──────────────┴────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/33a.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────────────┬──────────────┬───────────────┬──────────────────────┬────────────────────────────┐
 │  first_company  │ second_company  │ first_rating │ second_rating │     first_movie      │        second_movie        │
 │     varchar     │     varchar     │   varchar    │    varchar    │       varchar        │          varchar           │
@@ -683,7 +598,6 @@ Doesn't support type 0 yet!
 │ 495 Productions │ 495 Productions │ 3.3          │ 2.7           │ A Double Shot at L…  │ A Shot at Love with Tila…  │
 └─────────────────┴─────────────────┴──────────────┴───────────────┴──────────────────────┴────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/33b.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────────────┬──────────────┬───────────────┬──────────────────────┬────────────────────────────┐
 │  first_company  │ second_company  │ first_rating │ second_rating │     first_movie      │        second_movie        │
 │     varchar     │     varchar     │   varchar    │    varchar    │       varchar        │          varchar           │
@@ -691,7 +605,6 @@ Doesn't support type 0 yet!
 │ MTV Netherlands │ 495 Productions │ 3.3          │ 2.7           │ A Double Shot at L…  │ A Shot at Love with Tila…  │
 └─────────────────┴─────────────────┴──────────────┴───────────────┴──────────────────────┴────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/33c.sql
-Doesn't support type 0 yet!
 ┌───────────────┬─────────────────┬──────────────┬───────────────┬───────────────────────┬───────────────────────┐
 │ first_company │ second_company  │ first_rating │ second_rating │      first_movie      │     second_movie      │
 │    varchar    │     varchar     │   varchar    │    varchar    │        varchar        │        varchar        │
@@ -699,7 +612,6 @@ Doesn't support type 0 yet!
 │ 2BE           │ 495 Productions │ 1.3          │ 1.0           │ A Double Shot at Love │ A Double Shot at Love │
 └───────────────┴─────────────────┴──────────────┴───────────────┴───────────────────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/3a.sql
-Doesn't support type 0 yet!
 ┌────────────────────┐
 │    movie_title     │
 │      varchar       │
@@ -707,7 +619,6 @@ Doesn't support type 0 yet!
 │ 2 Days in New York │
 └────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/3b.sql
-Doesn't support type 0 yet!
 ┌────────────────────────┐
 │      movie_title       │
 │        varchar         │
@@ -715,7 +626,6 @@ Doesn't support type 0 yet!
 │ 300: Rise of an Empire │
 └────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/3c.sql
-Doesn't support type 0 yet!
 ┌─────────────┐
 │ movie_title │
 │   varchar   │
@@ -723,7 +633,6 @@ Doesn't support type 0 yet!
 │ & Teller 2  │
 └─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/4a.sql
-Doesn't support type 0 yet!
 ┌─────────┬─────────────┐
 │ rating  │ movie_title │
 │ varchar │   varchar   │
@@ -731,7 +640,6 @@ Doesn't support type 0 yet!
 │ 5.1     │ & Teller 2  │
 └─────────┴─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/4b.sql
-Doesn't support type 0 yet!
 ┌─────────┬─────────────────────┐
 │ rating  │     movie_title     │
 │ varchar │       varchar       │
@@ -739,7 +647,6 @@ Doesn't support type 0 yet!
 │ 9.1     │ Batman: Arkham City │
 └─────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/4c.sql
-Doesn't support type 0 yet!
 ┌─────────┬─────────────┐
 │ rating  │ movie_title │
 │ varchar │   varchar   │
@@ -747,7 +654,6 @@ Doesn't support type 0 yet!
 │ 2.1     │ & Teller 2  │
 └─────────┴─────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/5a.sql
-Doesn't support type 0 yet!
 ┌────────────────────────┐
 │ typical_european_movie │
 │        varchar         │
@@ -755,7 +661,6 @@ Doesn't support type 0 yet!
 │                        │
 └────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/5b.sql
-Doesn't support type 0 yet!
 ┌────────────────────┐
 │ american_vhs_movie │
 │      varchar       │
@@ -763,7 +668,6 @@ Doesn't support type 0 yet!
 │                    │
 └────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/5c.sql
-Doesn't support type 0 yet!
 ┌────────────────┐
 │ american_movie │
 │    varchar     │
@@ -771,7 +675,6 @@ Doesn't support type 0 yet!
 │ 11,830,420     │
 └────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/6a.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────┬────────────────────┬──────────────┐
 │       movie_keyword       │     actor_name     │ marvel_movie │
 │          varchar          │      varchar       │   varchar    │
@@ -779,7 +682,6 @@ Doesn't support type 0 yet!
 │ marvel-cinematic-universe │ Downey Jr., Robert │ Iron Man 3   │
 └───────────────────────────┴────────────────────┴──────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/6b.sql
-Doesn't support type 0 yet!
 ┌────────────────┬────────────────────┬────────────────┐
 │ movie_keyword  │     actor_name     │   hero_movie   │
 │    varchar     │      varchar       │    varchar     │
@@ -787,7 +689,6 @@ Doesn't support type 0 yet!
 │ based-on-comic │ Downey Jr., Robert │ The Avengers 2 │
 └────────────────┴────────────────────┴────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/6c.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────┬────────────────────┬────────────────┐
 │       movie_keyword       │     actor_name     │  marvel_movie  │
 │          varchar          │      varchar       │    varchar     │
@@ -795,7 +696,6 @@ Doesn't support type 0 yet!
 │ marvel-cinematic-universe │ Downey Jr., Robert │ The Avengers 2 │
 └───────────────────────────┴────────────────────┴────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/6d.sql
-Doesn't support type 0 yet!
 ┌────────────────┬────────────────────┬───────────────────────┐
 │ movie_keyword  │     actor_name     │      hero_movie       │
 │    varchar     │      varchar       │        varchar        │
@@ -803,7 +703,6 @@ Doesn't support type 0 yet!
 │ based-on-comic │ Downey Jr., Robert │ 2008 MTV Movie Awards │
 └────────────────┴────────────────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/6e.sql
-Doesn't support type 0 yet!
 ┌───────────────────────────┬────────────────────┬──────────────┐
 │       movie_keyword       │     actor_name     │ marvel_movie │
 │          varchar          │      varchar       │   varchar    │
@@ -811,7 +710,6 @@ Doesn't support type 0 yet!
 │ marvel-cinematic-universe │ Downey Jr., Robert │ Iron Man 3   │
 └───────────────────────────┴────────────────────┴──────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/6f.sql
-Doesn't support type 0 yet!
 ┌────────────────┬─────────────────────────────────┬────────────┐
 │ movie_keyword  │           actor_name            │ hero_movie │
 │    varchar     │             varchar             │  varchar   │
@@ -819,7 +717,6 @@ Doesn't support type 0 yet!
 │ based-on-comic │ "Steff", Stefanie Oxmann Mcgaha │ & Teller 2 │
 └────────────────┴─────────────────────────────────┴────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/7a.sql
-Doesn't support type 0 yet!
 ┌─────────────────────────┬─────────────────┐
 │        of_person        │ biography_movie │
 │         varchar         │     varchar     │
@@ -827,7 +724,6 @@ Doesn't support type 0 yet!
 │ Antonioni, Michelangelo │ Dressed to Kill │
 └─────────────────────────┴─────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/7b.sql
-Doesn't support type 0 yet!
 ┌─────────────────┬─────────────────┐
 │    of_person    │ biography_movie │
 │     varchar     │     varchar     │
@@ -835,7 +731,6 @@ Doesn't support type 0 yet!
 │ De Palma, Brian │ Dressed to Kill │
 └─────────────────┴─────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/7c.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ cast_member_name │                                         cast_member_info                                          │
 │     varchar      │                                              varchar                                              │
@@ -843,7 +738,6 @@ Doesn't support type 0 yet!
 │ 50 Cent          │ "Boo" Arnold was born Earl Arnold in Hattiesburg, Mississippi in 1966. His father gave him the …  │
 └──────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/8a.sql
-Doesn't support type 0 yet!
 ┌───────────────────┬───────────────────────┐
 │ actress_pseudonym │ japanese_movie_dubbed │
 │      varchar      │        varchar        │
@@ -851,7 +745,6 @@ Doesn't support type 0 yet!
 │ Chambers, Linda   │ .hack//Quantum        │
 └───────────────────┴───────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/8b.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬─────────────────────────────┐
 │ acress_pseudonym │    japanese_anime_movie     │
 │     varchar      │           varchar           │
@@ -859,7 +752,6 @@ Doesn't support type 0 yet!
 │ Chambers, Linda  │ Dragon Ball Z: Shin Budokai │
 └──────────────────┴─────────────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/8c.sql
-Doesn't support type 0 yet!
 ┌────────────────────┬─────────────────────┐
 │ writer_pseudo_name │     movie_title     │
 │      varchar       │       varchar       │
@@ -867,7 +759,6 @@ Doesn't support type 0 yet!
 │ "A.J."             │ #1 Cheerleader Camp │
 └────────────────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/8d.sql
-Doesn't support type 0 yet!
 ┌─────────────────────────┬─────────────────────┐
 │ costume_designer_pseudo │ movie_with_costumes │
 │         varchar         │       varchar       │
@@ -875,7 +766,6 @@ Doesn't support type 0 yet!
 │ "Jenny from the Block"  │ #1 Cheerleader Camp │
 └─────────────────────────┴─────────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/9a.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬───────────────────┬──────────────┐
 │ alternative_name │  character_name   │    movie     │
 │     varchar      │      varchar      │   varchar    │
@@ -883,7 +773,6 @@ Doesn't support type 0 yet!
 │ AJ               │ Airport Announcer │ Blue Harvest │
 └──────────────────┴───────────────────┴──────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/9b.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬───────────────────┬─────────────────┬────────────────┐
 │ alternative_name │ voiced_character  │ voicing_actress │ american_movie │
 │     varchar      │      varchar      │     varchar     │    varchar     │
@@ -891,7 +780,6 @@ Doesn't support type 0 yet!
 │ AJ               │ Airport Announcer │ Bassett, Angela │ Blue Harvest   │
 └──────────────────┴───────────────────┴─────────────────┴────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/9c.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬───────────────────────┬────────────────────┬────────────────┐
 │ alternative_name │ voiced_character_name │  voicing_actress   │ american_movie │
 │     varchar      │        varchar        │      varchar       │    varchar     │
@@ -899,7 +787,6 @@ Doesn't support type 0 yet!
 │ 'Annette'        │ 2nd Balladeer         │ Alborg, Ana Esther │ (1975-01-20)   │
 └──────────────────┴───────────────────────┴────────────────────┴────────────────┘
 execute /home/pei/Project/benchmarks/imdb_job-postgres/queries/9d.sql
-Doesn't support type 0 yet!
 ┌──────────────────┬──────────────────────────┬─────────────────┬──────────────────┐
 │ alternative_name │     voiced_char_name     │ voicing_actress │  american_movie  │
 │     varchar      │         varchar          │     varchar     │     varchar      │
