@@ -203,6 +203,19 @@ bool JoinOrderOptimizer::ExtractJoinRelations(LogicalOperator &input_op, vector<
 		relations.push_back(std::move(relation));
 		return true;
 	}
+	case LogicalOperatorType::LOGICAL_CHUNK_GET: {
+		// data chunk, add to set of relations
+		auto get = (LogicalColumnDataGet *)op;
+		auto relation = make_unique<SingleJoinRelation>(&input_op, parent);
+		idx_t relation_id = relations.size();
+		//! make sure the optimizer has knowledge of the exact column bindings as well.
+		auto table_index = get->table_index;
+		relation_mapping[table_index] = relation_id;
+		// todo: LogicalColumnDataGet doesn't have column_ids yet
+		cardinality_estimator.AddRelationColumnMapping(get, relation_id);
+		relations.push_back(std::move(relation));
+		return true;
+	}
 	case LogicalOperatorType::LOGICAL_EXPRESSION_GET: {
 		// base table scan, add to set of relations
 		auto get = (LogicalExpressionGet *)op;

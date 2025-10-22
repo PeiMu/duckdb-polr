@@ -135,6 +135,40 @@ unique_ptr<LogicalOperator> Optimizer::PreOptimize(unique_ptr<LogicalOperator> p
 	}
 #endif
 
+	if (!context.config.enable_dbshaker_split_jop) {
+		if (context.config.enable_dbshaker_query_split) {
+			// perform statistics propagation
+			RunOptimizer(OptimizerType::STATISTICS_PROPAGATION, [&]() {
+				StatisticsPropagator propagator(context);
+				propagator.PropagateStatistics(plan);
+			});
+		}
+
+		// then we perform the join ordering optimization
+		// this also rewrites cross products + filters into joins and performs filter pushdowns
+		RunOptimizer(OptimizerType::JOIN_ORDER, [&]() {
+			JoinOrderOptimizer optimizer(context);
+			plan = optimizer.Optimize(std::move(plan));
+		});
+
+		RunOptimizer(OptimizerType::UNUSED_COLUMNS, [&]() {
+			RemoveUnusedColumns unused(binder, context, true);
+			unused.VisitOperator(*plan);
+		});
+
+		// perform statistics propagation
+		RunOptimizer(OptimizerType::STATISTICS_PROPAGATION, [&]() {
+			StatisticsPropagator propagator(context);
+			propagator.PropagateStatistics(plan);
+		});
+
+		// then we extract common subexpressions inside the different operators
+		RunOptimizer(OptimizerType::COMMON_SUBEXPRESSIONS, [&]() {
+			CommonSubExpressionOptimizer cse_optimizer(binder);
+			cse_optimizer.VisitOperator(*plan);
+		});
+	}
+
 #ifdef DEBUG
 	Planner::VerifyPlan(context, plan);
 #endif
@@ -156,29 +190,52 @@ unique_ptr<LogicalOperator> Optimizer::PostOptimize(unique_ptr<LogicalOperator> 
 
 	this->plan = std::move(plan_p);
 
-	// then we perform the join ordering optimization
-	// this also rewrites cross products + filters into joins and performs filter pushdowns
-	RunOptimizer(OptimizerType::JOIN_ORDER, [&]() {
-		JoinOrderOptimizer optimizer(context);
-		plan = optimizer.Optimize(std::move(plan));
-	});
+	if (context.config.enable_dbshaker_split_jop) {
+		// perform statistics propagation
+		RunOptimizer(OptimizerType::STATISTICS_PROPAGATION, [&]() {
+			StatisticsPropagator propagator(context);
+			propagator.PropagateStatistics(plan);
+		});
 
-	RunOptimizer(OptimizerType::UNUSED_COLUMNS, [&]() {
-		RemoveUnusedColumns unused(binder, context, true);
-		unused.VisitOperator(*plan);
-	});
+		// then we perform the join ordering optimization
+		// this also rewrites cross products + filters into joins and performs filter pushdowns
+		RunOptimizer(OptimizerType::JOIN_ORDER, [&]() {
+			JoinOrderOptimizer optimizer(context);
+			plan = optimizer.Optimize(std::move(plan));
+		});
 
-	// perform statistics propagation
-	RunOptimizer(OptimizerType::STATISTICS_PROPAGATION, [&]() {
-		StatisticsPropagator propagator(context);
-		propagator.PropagateStatistics(plan);
-	});
+#ifdef DEBUG
+		// check if CORSS_PRODUCT are all simplified
+		std::function<void(unique_ptr<LogicalOperator> & op)> check_cross_product;
+		check_cross_product = [&check_cross_product](unique_ptr<LogicalOperator> &op) {
+			for (auto &child : op->children) {
+				if (LogicalOperatorType::LOGICAL_CROSS_PRODUCT == child->type) {
+					Printer::Print("We have un-simplified CROSS_PRODUCT!!!");
+					D_ASSERT(false);
+				}
+				check_cross_product(child);
+			}
+		};
+		check_cross_product(plan);
+#endif
 
-	// then we extract common subexpressions inside the different operators
-	RunOptimizer(OptimizerType::COMMON_SUBEXPRESSIONS, [&]() {
-		CommonSubExpressionOptimizer cse_optimizer(binder);
-		cse_optimizer.VisitOperator(*plan);
-	});
+		RunOptimizer(OptimizerType::UNUSED_COLUMNS, [&]() {
+			RemoveUnusedColumns unused(binder, context, true);
+			unused.VisitOperator(*plan);
+		});
+
+		// perform statistics propagation
+		RunOptimizer(OptimizerType::STATISTICS_PROPAGATION, [&]() {
+			StatisticsPropagator propagator(context);
+			propagator.PropagateStatistics(plan);
+		});
+
+		// then we extract common subexpressions inside the different operators
+		RunOptimizer(OptimizerType::COMMON_SUBEXPRESSIONS, [&]() {
+			CommonSubExpressionOptimizer cse_optimizer(binder);
+			cse_optimizer.VisitOperator(*plan);
+		});
+	}
 
 	RunOptimizer(OptimizerType::COMMON_AGGREGATE, [&]() {
 		CommonAggregateOptimizer common_aggregate;

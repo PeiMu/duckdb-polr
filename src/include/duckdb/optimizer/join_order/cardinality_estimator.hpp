@@ -13,6 +13,7 @@
 #include "duckdb/planner/column_binding_map.hpp"
 #include "duckdb/planner/filter/conjunction_filter.hpp"
 #include "duckdb/planner/filter/constant_filter.hpp"
+#include "duckdb/planner/operator/logical_column_data_get.hpp"
 
 namespace duckdb {
 
@@ -85,6 +86,7 @@ public:
 	void CopyRelationMap(column_binding_map_t<ColumnBinding> &child_binding_map);
 	void MergeBindings(idx_t, idx_t relation_id, vector<column_binding_map_t<ColumnBinding>> &child_binding_maps);
 	void AddRelationColumnMapping(LogicalGet *get, idx_t relation_id);
+	void AddRelationColumnMapping(LogicalColumnDataGet *get, idx_t relation_id);
 
 	void InitTotalDomains();
 	void UpdateTotalDomains(JoinNode *node, LogicalOperator *op);

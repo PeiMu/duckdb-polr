@@ -174,6 +174,15 @@ void CardinalityEstimator::AddRelationColumnMapping(LogicalGet *get, idx_t relat
 	}
 }
 
+void CardinalityEstimator::AddRelationColumnMapping(LogicalColumnDataGet *get, idx_t relation_id) {
+	// todo: LogicalColumnDataGet doesn't have column_ids yet
+//	for (idx_t it = 0; it < get->column_ids.size(); it++) {
+//		auto key = ColumnBinding(relation_id, it);
+//		auto value = ColumnBinding(get->table_index, get->column_ids[it]);
+//		AddRelationToColumnMapping(key, value);
+//	}
+}
+
 void UpdateDenom(Subgraph2Denominator *relation_2_denom, RelationsToTDom *relation_to_tdom) {
 	relation_2_denom->denom *=
 	    relation_to_tdom->has_tdom_hll ? relation_to_tdom->tdom_hll : relation_to_tdom->tdom_no_hll;

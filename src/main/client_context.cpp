@@ -167,12 +167,17 @@ PreservedError ClientContext::EndQueryInternal(ClientContextLock &lock, bool suc
 		client_data->http_stats->Reset();
 	}
 
+	if (active_query->executor) {
+		active_query->executor->CancelTasks();
+	}
+
 	// Notify any registered state of query end
 	for (auto const &s : registered_state) {
 		s.second->QueryEnd();
 	}
 
 	D_ASSERT(active_query.get());
+	active_query.reset();
 	PreservedError error;
 	if (continue_exec)
 		return error;
@@ -424,34 +429,34 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 
 	result->unbound_statement = std::move(tmp_statement);
 	// todo: move this to a standalone function
-	std::unordered_map<idx_t, std::string> table_alias_name;
-	idx_t table_index = 0;
-	if (result->unbound_statement->type == StatementType::SELECT_STATEMENT) {
-		auto &select_statemet = (SelectStatement &)result->unbound_statement;
-		auto &select_node = (SelectNode &)select_statemet.node;
-		auto &node_from_table = select_node.from_table;
-		std::function<void(const unique_ptr<TableRef> &node_from_table)> iterate_plan;
-		iterate_plan = [&table_alias_name, &table_index, &iterate_plan](const unique_ptr<TableRef> &node_from_table) {
-			switch (node_from_table->type) {
-			case TableReferenceType::BASE_TABLE: {
-				auto &base_table_ref = (BaseTableRef &)node_from_table;
-				table_alias_name.insert({table_index, base_table_ref.alias});
-				table_index++;
-				break;
-			}
-			case TableReferenceType::JOIN: {
-				auto &join_ref = (JoinRef &)node_from_table;
-				iterate_plan(join_ref.left);
-				iterate_plan(join_ref.right);
-				break;
-			}
-			default:
-				Printer::Print("Doesn't support type " + std::to_string((uint8_t)node_from_table->type) + " yet!");
-				break;
-			}
-		};
-		iterate_plan(node_from_table);
-	}
+//	std::unordered_map<idx_t, std::string> table_alias_name;
+//	idx_t table_index = 0;
+//	if (result->unbound_statement->type == StatementType::SELECT_STATEMENT) {
+//		auto &select_statemet = (SelectStatement &)result->unbound_statement;
+//		auto &select_node = (SelectNode &)select_statemet.node;
+//		auto &node_from_table = select_node.from_table;
+//		std::function<void(const unique_ptr<TableRef> &node_from_table)> iterate_plan;
+//		iterate_plan = [&table_alias_name, &table_index, &iterate_plan](const unique_ptr<TableRef> &node_from_table) {
+//			switch (node_from_table->type) {
+//			case TableReferenceType::BASE_TABLE: {
+//				auto &base_table_ref = (BaseTableRef &)node_from_table;
+//				table_alias_name.insert({table_index, base_table_ref.alias});
+//				table_index++;
+//				break;
+//			}
+//			case TableReferenceType::JOIN: {
+//				auto &join_ref = (JoinRef &)node_from_table;
+//				iterate_plan(join_ref.left);
+//				iterate_plan(join_ref.right);
+//				break;
+//			}
+//			default:
+//				Printer::Print("Doesn't support type " + std::to_string((uint8_t)node_from_table->type) + " yet!");
+//				break;
+//			}
+//		};
+//		iterate_plan(node_from_table);
+//	}
 
 	if (!planner.properties.bound_all_parameters) {
 		return result;
@@ -459,11 +464,11 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 #ifdef DEBUG
 	plan->Verify(*this);
 #endif
-#if ENABLE_MEASURE_EXE_TIME || ENABLE_MERGE_BACK_PLAN || ENABLE_DEBUG_PRINT
+//#if ENABLE_MEASURE_EXE_TIME || ENABLE_MERGE_BACK_PLAN || ENABLE_DEBUG_PRINT
 	execute_plan = plan->type == LogicalOperatorType::LOGICAL_PROJECTION ||
 	               plan->type == LogicalOperatorType::LOGICAL_ORDER_BY ||
 	               plan->type == LogicalOperatorType::LOGICAL_LIMIT;
-#endif
+//#endif
 
 #if ENABLE_DEBUG_PRINT
 	if (execute_plan) {
@@ -537,6 +542,9 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 		};
 
 		while (config.enable_dbshaker_query_split) {
+			if (!execute_plan) {
+				break;
+			}
 			if (config.enable_dbshaker_split_jop) {
 #if ALWAYS_SPLIT
 				needToSplit = true;
@@ -840,8 +848,8 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 #endif
 			if (1 == subqueries.size()) {
 				// add the original projection head
-				unique_ptr<LogicalOperator> last_subquery = plan->Copy(optimizer.context);
-				auto child = last_subquery.get();
+//				unique_ptr<LogicalOperator> last_subquery = plan->Copy(optimizer.context);
+				auto child = plan.get();
 
 				auto &child_node = subqueries.front()[0];
 #ifdef DEBUG
@@ -853,7 +861,7 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 #endif
 
 				// if it's the last subquery, break and continue the execution of the main stream
-				plan = subquery_preparer.UpdateProjHead(std::move(last_subquery), proj_expr);
+				plan = subquery_preparer.UpdateProjHead(std::move(plan), proj_expr);
 #if ENABLE_DEBUG_PRINT
 				Printer::Print("last subquery");
 				plan->Print();
@@ -887,19 +895,21 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 		}
 
 #if MANUAL_EXPLAIN_ANALYZE
-		auto explain_sub_plan = plan->Copy(*this);
-		explain_sub_plan = make_unique<LogicalExplain>(std::move(explain_sub_plan), ExplainType::EXPLAIN_ANALYZE);
-		explain_sub_plan = optimizer.PostOptimize(std::move(explain_sub_plan));
+		if (execute_plan) {
+			auto explain_sub_plan = plan->Copy(*this);
+			explain_sub_plan = make_unique<LogicalExplain>(std::move(explain_sub_plan), ExplainType::EXPLAIN_ANALYZE);
+			explain_sub_plan = optimizer.PostOptimize(std::move(explain_sub_plan));
 #if ENABLE_DEBUG_PRINT
-		// debug: print subquery
-		Printer::Print("After the last PostOptimization");
-		explain_sub_plan->Print();
+			// debug: print subquery
+			Printer::Print("After the last PostOptimization");
+			explain_sub_plan->Print();
 
-		Planner::VerifyPlan(optimizer.context, explain_sub_plan);
+			Planner::VerifyPlan(optimizer.context, explain_sub_plan);
 #endif
-		subquery_preparer.ExplainAnalyzeSubQuery(lock, result, std::move(explain_sub_plan), result->catalog_version,
-		                                         result->unbound_statement->query, result->unbound_statement->n_param,
-		                                         result->unbound_statement->named_param_map);
+			subquery_preparer.ExplainAnalyzeSubQuery(
+			    lock, result, std::move(explain_sub_plan), result->catalog_version, result->unbound_statement->query,
+			    result->unbound_statement->n_param, result->unbound_statement->named_param_map);
+		}
 #endif
 
 #if TIME_BREAK_DOWN
