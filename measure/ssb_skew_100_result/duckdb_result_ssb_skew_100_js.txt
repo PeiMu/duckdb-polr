@@ -1,0 +1,295 @@
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q2-1.sql
+┌───────────────────┬────────┬───────────┐
+│ sum("LO_REVENUE") │ D_YEAR │  P_BRAND  │
+│      int128       │ uint16 │  varchar  │
+├───────────────────┼────────┼───────────┤
+│        1435905467 │   1992 │ MFGR#111  │
+│        1687766352 │   1992 │ MFGR#1110 │
+│        1617508055 │   1992 │ MFGR#1111 │
+│        1668721587 │   1992 │ MFGR#1112 │
+│        1534518324 │   1992 │ MFGR#1113 │
+│        1469018024 │   1992 │ MFGR#1114 │
+│        1514795997 │   1992 │ MFGR#1115 │
+│        1351423929 │   1992 │ MFGR#1116 │
+│        1581914230 │   1992 │ MFGR#1117 │
+│        1714864178 │   1992 │ MFGR#1118 │
+│        1616287432 │   1992 │ MFGR#1119 │
+│        1742648468 │   1992 │ MFGR#112  │
+│        1459843287 │   1992 │ MFGR#1120 │
+│        1788822801 │   1992 │ MFGR#1121 │
+│        1532107997 │   1992 │ MFGR#1122 │
+│        1435345128 │   1992 │ MFGR#1123 │
+│        1626937630 │   1992 │ MFGR#1124 │
+│        1690155669 │   1992 │ MFGR#1125 │
+│        1711122236 │   1992 │ MFGR#1126 │
+│        1536553279 │   1992 │ MFGR#1127 │
+│             ·     │     ·  │     ·     │
+│             ·     │     ·  │     ·     │
+│             ·     │     ·  │     ·     │
+│        8861977303 │   1998 │ MFGR#5528 │
+│        8509245382 │   1998 │ MFGR#5529 │
+│        9259007565 │   1998 │ MFGR#553  │
+│        8613807122 │   1998 │ MFGR#5530 │
+│        8846886624 │   1998 │ MFGR#5531 │
+│        8326112102 │   1998 │ MFGR#5532 │
+│        8129604626 │   1998 │ MFGR#5533 │
+│        8432667738 │   1998 │ MFGR#5534 │
+│        8374896840 │   1998 │ MFGR#5535 │
+│        8967277827 │   1998 │ MFGR#5536 │
+│        8155127170 │   1998 │ MFGR#5537 │
+│        8384323134 │   1998 │ MFGR#5538 │
+│        8229056782 │   1998 │ MFGR#5539 │
+│        8758971504 │   1998 │ MFGR#554  │
+│        9786756476 │   1998 │ MFGR#5540 │
+│        7754813365 │   1998 │ MFGR#555  │
+│        8138918182 │   1998 │ MFGR#556  │
+│        8649285316 │   1998 │ MFGR#557  │
+│        8303355568 │   1998 │ MFGR#558  │
+│        7907008784 │   1998 │ MFGR#559  │
+├───────────────────┴────────┴───────────┤
+│ 7000 rows (40 shown)         3 columns │
+└────────────────────────────────────────┘
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q2-2.sql
+┌───────────────────┬────────┬───────────┐
+│ sum("LO_REVENUE") │ D_YEAR │  P_BRAND  │
+│      int128       │ uint16 │  varchar  │
+├───────────────────┼────────┼───────────┤
+│      133534673506 │   1992 │ MFGR#2221 │
+│      127856374365 │   1992 │ MFGR#2222 │
+│      127608212983 │   1992 │ MFGR#2223 │
+│      126693633211 │   1992 │ MFGR#2224 │
+│      129180331925 │   1992 │ MFGR#2225 │
+│      127184723400 │   1992 │ MFGR#2226 │
+│      122297426988 │   1992 │ MFGR#2227 │
+│      128172107914 │   1992 │ MFGR#2228 │
+│      133175633919 │   1993 │ MFGR#2221 │
+│      126981696307 │   1993 │ MFGR#2222 │
+│      129323172181 │   1993 │ MFGR#2223 │
+│      128264561514 │   1993 │ MFGR#2224 │
+│      127399962058 │   1993 │ MFGR#2225 │
+│      125263465265 │   1993 │ MFGR#2226 │
+│      121781186769 │   1993 │ MFGR#2227 │
+│      126917220506 │   1993 │ MFGR#2228 │
+│      134326649163 │   1994 │ MFGR#2221 │
+│      128519473598 │   1994 │ MFGR#2222 │
+│      126002476376 │   1994 │ MFGR#2223 │
+│      127186818829 │   1994 │ MFGR#2224 │
+│            ·      │     ·  │     ·     │
+│            ·      │     ·  │     ·     │
+│            ·      │     ·  │     ·     │
+│      128209693347 │   1996 │ MFGR#2225 │
+│      127828848683 │   1996 │ MFGR#2226 │
+│      121896674095 │   1996 │ MFGR#2227 │
+│      128680260812 │   1996 │ MFGR#2228 │
+│        2319272157 │   1997 │ MFGR#2221 │
+│        2154066031 │   1997 │ MFGR#2222 │
+│        2470351832 │   1997 │ MFGR#2223 │
+│        2315603493 │   1997 │ MFGR#2224 │
+│        2114081922 │   1997 │ MFGR#2225 │
+│        2239899945 │   1997 │ MFGR#2226 │
+│        2179667519 │   1997 │ MFGR#2227 │
+│        2071313167 │   1997 │ MFGR#2228 │
+│      457779523246 │   1998 │ MFGR#2221 │
+│      436220062377 │   1998 │ MFGR#2222 │
+│      439655608558 │   1998 │ MFGR#2223 │
+│      434635376643 │   1998 │ MFGR#2224 │
+│      439429832155 │   1998 │ MFGR#2225 │
+│      438090885334 │   1998 │ MFGR#2226 │
+│      416523283687 │   1998 │ MFGR#2227 │
+│      439431822322 │   1998 │ MFGR#2228 │
+├───────────────────┴────────┴───────────┤
+│ 56 rows (40 shown)           3 columns │
+└────────────────────────────────────────┘
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q2-3.sql
+┌───────────────────┬────────┬───────────┐
+│ sum("LO_REVENUE") │ D_YEAR │  P_BRAND  │
+│      int128       │ uint16 │  varchar  │
+├───────────────────┼────────┼───────────┤
+│    28101749909650 │   1992 │ MFGR#2239 │
+│    28125543983123 │   1993 │ MFGR#2239 │
+│    28114929576776 │   1994 │ MFGR#2239 │
+│    28125289052514 │   1995 │ MFGR#2239 │
+│    28117575328519 │   1996 │ MFGR#2239 │
+│       24909814678 │   1997 │ MFGR#2239 │
+│     4905885885066 │   1998 │ MFGR#2239 │
+└───────────────────┴────────┴───────────┘
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q3-1.sql
+┌───────────┬───────────┬────────┬──────────────┐
+│ C_NATION  │ S_NATION  │ D_YEAR │   revenue    │
+│  varchar  │  varchar  │ uint16 │    int128    │
+├───────────┼───────────┼────────┼──────────────┤
+│ JAPAN     │ CHINA     │   1997 │ 178462435956 │
+│ INDIA     │ CHINA     │   1997 │ 177679278678 │
+│ VIETNAM   │ CHINA     │   1997 │ 176855509054 │
+│ INDONESIA │ CHINA     │   1997 │ 176681303354 │
+│ CHINA     │ CHINA     │   1997 │ 176265713450 │
+│ INDIA     │ INDIA     │   1997 │   9938676128 │
+│ VIETNAM   │ INDONESIA │   1997 │   9740550286 │
+│ INDONESIA │ JAPAN     │   1997 │   9734818721 │
+│ INDONESIA │ INDONESIA │   1997 │   9693674734 │
+│ INDIA     │ VIETNAM   │   1997 │   9607472170 │
+│ CHINA     │ INDONESIA │   1997 │   9602022669 │
+│ JAPAN     │ INDIA     │   1997 │   9543402598 │
+│ INDIA     │ JAPAN     │   1997 │   9523985117 │
+│ JAPAN     │ JAPAN     │   1997 │   9502043909 │
+│ VIETNAM   │ JAPAN     │   1997 │   9425226621 │
+│ JAPAN     │ INDONESIA │   1997 │   9392750789 │
+│ VIETNAM   │ VIETNAM   │   1997 │   9372580106 │
+│ CHINA     │ JAPAN     │   1997 │   9346620012 │
+│ JAPAN     │ VIETNAM   │   1997 │   9336038259 │
+│ INDONESIA │ VIETNAM   │   1997 │   9324955296 │
+│ INDIA     │ INDONESIA │   1997 │   9309287591 │
+│ VIETNAM   │ INDIA     │   1997 │   9282989713 │
+│ CHINA     │ INDIA     │   1997 │   9261869909 │
+│ INDONESIA │ INDIA     │   1997 │   9252328969 │
+│ CHINA     │ VIETNAM   │   1997 │   9237699418 │
+├───────────┴───────────┴────────┴──────────────┤
+│ 25 rows                             4 columns │
+└───────────────────────────────────────────────┘
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q3-2.sql
+┌────────────┬────────────┬────────┬────────────┐
+│   C_CITY   │   S_CITY   │ D_YEAR │  revenue   │
+│  varchar   │  varchar   │ uint16 │   int128   │
+├────────────┼────────────┼────────┼────────────┤
+│ UNITED ST6 │ UNITED ST8 │   1997 │ 3570110189 │
+│ UNITED ST6 │ UNITED ST4 │   1997 │ 3226224996 │
+│ UNITED ST6 │ UNITED ST7 │   1997 │ 3212605884 │
+│ UNITED ST6 │ UNITED ST3 │   1997 │ 3178671832 │
+│ UNITED ST6 │ UNITED ST9 │   1997 │ 3088574953 │
+│ UNITED ST6 │ UNITED ST1 │   1997 │ 3046277873 │
+│ UNITED ST6 │ UNITED ST6 │   1997 │ 3032722457 │
+│ UNITED ST6 │ UNITED ST2 │   1997 │ 2997412238 │
+│ UNITED ST6 │ UNITED ST0 │   1997 │ 2951141860 │
+│ UNITED ST6 │ UNITED ST5 │   1997 │ 2422505070 │
+│ UNITED ST1 │ UNITED ST3 │   1997 │   27816836 │
+│ UNITED ST5 │ UNITED ST9 │   1997 │   25708136 │
+│ UNITED ST1 │ UNITED ST6 │   1997 │   25256870 │
+│ UNITED ST4 │ UNITED ST8 │   1997 │   24043196 │
+│ UNITED ST0 │ UNITED ST2 │   1997 │   23373918 │
+│ UNITED ST2 │ UNITED ST6 │   1997 │   23003983 │
+│ UNITED ST2 │ UNITED ST7 │   1997 │   22964246 │
+│ UNITED ST9 │ UNITED ST0 │   1997 │   22759375 │
+│ UNITED ST4 │ UNITED ST7 │   1997 │   22323990 │
+│ UNITED ST0 │ UNITED ST9 │   1997 │   22278605 │
+│     ·      │     ·      │     ·  │       ·    │
+│     ·      │     ·      │     ·  │       ·    │
+│     ·      │     ·      │     ·  │       ·    │
+│ UNITED ST3 │ UNITED ST1 │   1997 │   13246793 │
+│ UNITED ST9 │ UNITED ST7 │   1997 │   13143771 │
+│ UNITED ST0 │ UNITED ST3 │   1997 │   12988186 │
+│ UNITED ST0 │ UNITED ST1 │   1997 │   12846888 │
+│ UNITED ST4 │ UNITED ST0 │   1997 │   12809406 │
+│ UNITED ST0 │ UNITED ST4 │   1997 │   12584278 │
+│ UNITED ST7 │ UNITED ST1 │   1997 │   12540401 │
+│ UNITED ST3 │ UNITED ST3 │   1997 │   12350098 │
+│ UNITED ST4 │ UNITED ST2 │   1997 │   11993893 │
+│ UNITED ST8 │ UNITED ST0 │   1997 │   11945970 │
+│ UNITED ST8 │ UNITED ST7 │   1997 │   11924243 │
+│ UNITED ST0 │ UNITED ST5 │   1997 │   11592724 │
+│ UNITED ST4 │ UNITED ST3 │   1997 │   11168524 │
+│ UNITED ST3 │ UNITED ST6 │   1997 │   10473240 │
+│ UNITED ST1 │ UNITED ST4 │   1997 │    9929787 │
+│ UNITED ST4 │ UNITED ST5 │   1997 │    9889416 │
+│ UNITED ST4 │ UNITED ST6 │   1997 │    8345112 │
+│ UNITED ST9 │ UNITED ST9 │   1997 │    7394730 │
+│ UNITED ST5 │ UNITED ST5 │   1997 │    7277308 │
+│ UNITED ST2 │ UNITED ST0 │   1997 │    6774999 │
+├────────────┴────────────┴────────┴────────────┤
+│ 100 rows (40 shown)                 4 columns │
+└───────────────────────────────────────────────┘
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q3-3.sql
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q4-1.sql
+┌────────┬───────────────┬───────────────┐
+│ D_YEAR │   C_NATION    │    profit     │
+│ uint16 │    varchar    │    int128     │
+├────────┼───────────────┼───────────────┤
+│   1992 │ ARGENTINA     │   75757095433 │
+│   1992 │ BRAZIL        │   75476553396 │
+│   1992 │ CANADA        │   76151046314 │
+│   1992 │ PERU          │   75563275140 │
+│   1992 │ UNITED STATES │ 1439003907445 │
+│   1993 │ ARGENTINA     │   76125239968 │
+│   1993 │ BRAZIL        │   76069891696 │
+│   1993 │ CANADA        │   76733082074 │
+│   1993 │ PERU          │   75731082545 │
+│   1993 │ UNITED STATES │ 1442975149552 │
+│   1994 │ ARGENTINA     │   75985851689 │
+│   1994 │ BRAZIL        │   75855600332 │
+│   1994 │ CANADA        │   75981392550 │
+│   1994 │ PERU          │   76053922088 │
+│   1994 │ UNITED STATES │ 1440990673354 │
+│   1995 │ ARGENTINA     │   76591853605 │
+│   1995 │ BRAZIL        │   74848103615 │
+│   1995 │ CANADA        │   75577230091 │
+│   1995 │ PERU          │   75210143512 │
+│   1995 │ UNITED STATES │ 1437097105478 │
+│   1996 │ ARGENTINA     │   77067829196 │
+│   1996 │ BRAZIL        │   75697001232 │
+│   1996 │ CANADA        │   74774798621 │
+│   1996 │ PERU          │   74101612844 │
+│   1996 │ UNITED STATES │ 1438976911714 │
+│   1997 │ ARGENTINA     │     903439413 │
+│   1997 │ BRAZIL        │     842440173 │
+│   1997 │ CANADA        │     893284385 │
+│   1997 │ PERU          │     904549236 │
+│   1997 │ UNITED STATES │   17338322487 │
+│   1998 │ ARGENTINA     │  179536669194 │
+│   1998 │ BRAZIL        │  179046712767 │
+│   1998 │ CANADA        │  177726229187 │
+│   1998 │ PERU          │  178410018193 │
+│   1998 │ UNITED STATES │ 3409719529223 │
+├────────┴───────────────┴───────────────┤
+│ 35 rows                      3 columns │
+└────────────────────────────────────────┘
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q4-2.sql
+execute /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q4-3.sql
+┌────────┬────────────┬───────────┬───────────┐
+│ D_YEAR │   S_CITY   │  P_BRAND  │  profit   │
+│ uint16 │  varchar   │  varchar  │  int128   │
+├────────┼────────────┼───────────┼───────────┤
+│   1997 │ UNITED ST0 │ MFGR#111  │    236054 │
+│   1997 │ UNITED ST0 │ MFGR#1110 │   6834287 │
+│   1997 │ UNITED ST0 │ MFGR#1111 │    802573 │
+│   1997 │ UNITED ST0 │ MFGR#1112 │   1136067 │
+│   1997 │ UNITED ST0 │ MFGR#1114 │    626518 │
+│   1997 │ UNITED ST0 │ MFGR#1115 │    662884 │
+│   1997 │ UNITED ST0 │ MFGR#1118 │    831111 │
+│   1997 │ UNITED ST0 │ MFGR#112  │    773842 │
+│   1997 │ UNITED ST0 │ MFGR#1120 │   1517957 │
+│   1997 │ UNITED ST0 │ MFGR#1121 │    763362 │
+│   1997 │ UNITED ST0 │ MFGR#1122 │    192498 │
+│   1997 │ UNITED ST0 │ MFGR#1123 │    670934 │
+│   1997 │ UNITED ST0 │ MFGR#1124 │    480186 │
+│   1997 │ UNITED ST0 │ MFGR#1127 │    420958 │
+│   1997 │ UNITED ST0 │ MFGR#1128 │    793381 │
+│   1997 │ UNITED ST0 │ MFGR#1129 │    406458 │
+│   1997 │ UNITED ST0 │ MFGR#113  │    220546 │
+│   1997 │ UNITED ST0 │ MFGR#1132 │   1498177 │
+│   1997 │ UNITED ST0 │ MFGR#1133 │    621326 │
+│   1997 │ UNITED ST0 │ MFGR#1134 │   1888216 │
+│     ·  │     ·      │     ·     │      ·    │
+│     ·  │     ·      │     ·     │      ·    │
+│     ·  │     ·      │     ·     │      ·    │
+│   1998 │ UNITED ST9 │ MFGR#5528 │ 117882493 │
+│   1998 │ UNITED ST9 │ MFGR#5529 │ 114756552 │
+│   1998 │ UNITED ST9 │ MFGR#553  │ 101376547 │
+│   1998 │ UNITED ST9 │ MFGR#5530 │ 117590698 │
+│   1998 │ UNITED ST9 │ MFGR#5531 │ 131292186 │
+│   1998 │ UNITED ST9 │ MFGR#5532 │  99164629 │
+│   1998 │ UNITED ST9 │ MFGR#5533 │  84122623 │
+│   1998 │ UNITED ST9 │ MFGR#5534 │ 123919690 │
+│   1998 │ UNITED ST9 │ MFGR#5535 │ 118281340 │
+│   1998 │ UNITED ST9 │ MFGR#5536 │ 117886840 │
+│   1998 │ UNITED ST9 │ MFGR#5537 │ 107105001 │
+│   1998 │ UNITED ST9 │ MFGR#5538 │  97772221 │
+│   1998 │ UNITED ST9 │ MFGR#5539 │ 100337237 │
+│   1998 │ UNITED ST9 │ MFGR#554  │ 102489554 │
+│   1998 │ UNITED ST9 │ MFGR#5540 │ 113776112 │
+│   1998 │ UNITED ST9 │ MFGR#555  │ 106476560 │
+│   1998 │ UNITED ST9 │ MFGR#556  │  99096737 │
+│   1998 │ UNITED ST9 │ MFGR#557  │ 124526780 │
+│   1998 │ UNITED ST9 │ MFGR#558  │ 127032178 │
+│   1998 │ UNITED ST9 │ MFGR#559  │ 110060887 │
+├────────┴────────────┴───────────┴───────────┤
+│ 16267 rows (40 shown)             4 columns │
+└─────────────────────────────────────────────┘
