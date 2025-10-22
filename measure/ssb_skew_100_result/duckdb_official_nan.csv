@@ -1,0 +1,18 @@
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q2-1.sql"" ./ssb_skew_100_polr.db",8.013083902899998,0.033417327407006994,8.0038776072,37.04602375999999,7.22917188,7.9722724317,8.0701701017
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q2-2.sql"" ./ssb_skew_100_polr.db",7.429868842980001,0.018012835021444875,7.43042323458,29.82617554,7.552923959999999,7.39870699158,7.458311725580001
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q2-3.sql"" ./ssb_skew_100_polr.db",7.634922361860001,0.02690748009926884,7.63396084696,32.532172179999996,7.32718102,7.58892490696,7.687291263960001
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q3-1.sql"" ./ssb_skew_100_polr.db",7.32287226382,0.02823183833864931,7.3202992596200005,31.6742817,5.970067599999998,7.28136760862,7.36743266862
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q3-2.sql"" ./ssb_skew_100_polr.db",8.935203585520002,0.031983037983010915,8.93603359502,51.41636593999999,5.8809079,8.87614525102,8.97360038002
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q3-3.sql"" ./ssb_skew_100_polr.db",6.804520463359999,0.026318206021674583,6.79681066136,25.48008036,6.1762839,6.7670380018600005,6.84609142586
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q4-1.sql"" ./ssb_skew_100_polr.db",10.91607906976,0.02733555794513596,10.90364368126,69.31144314,9.068245699999999,10.89279174076,10.96569173376
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q4-2.sql"" ./ssb_skew_100_polr.db",10.676526601820001,0.022283464114636033,10.675714638819999,66.28909079999998,8.6412938,10.64869083682,10.71810012582
+command,mean,stddev,median,user,system,min,max
+"duckdb -c "".read /home/pei/Project/benchmark/ssb-skew-duckdb/ssb-skew/queries/q4-3.sql"" ./ssb_skew_100_polr.db",8.067811668080001,0.03585870388425814,8.071692248280002,34.835215319999996,8.80356848,8.00829958778,8.11572350678
