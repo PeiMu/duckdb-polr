@@ -35,8 +35,8 @@ fi
 
 
 # execute queries
-dir_1="/home/pei/Project/benchmarks/dsb-postgres/code/tools/1_instance_out_wo_multi_block/1/"
-dir_2="/home/pei/Project/benchmarks/dsb-postgres/code/tools/1_instance_out_wo_multi_block/2/"
+dir_1="$DSB_PATH/code/tools/1_instance_out_wo_multi_block/1/"
+dir_2="$DSB_PATH/code/tools/1_instance_out_wo_multi_block/2/"
 iteration=1
 
 log_name=duckdb_result_dsb_$2_$1.txt
