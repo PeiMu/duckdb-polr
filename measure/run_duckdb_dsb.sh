@@ -10,13 +10,13 @@ if [ -z "$2" ]; then
   exit 1
 fi
 
-#rm -f ./dsb_$2.db
+#rm -f ./dsb_$2_polr.db
 #
 #cd ../ && make clean && GEN=ninja VERBOSE=1 make 2>&1|tee -a compile.log && cd measure
 #
 ## create schema
 #echo "create dsb schema"
-#echo -ne ".read create_tables.sql" | duckdb ./dsb_$2.db
+#echo -ne ".read create_tables.sql" | duckdb ./dsb_$2_polr.db
 #
 ## load dsb
 #for table in customer_address customer_demographics date_dim warehouse ship_mode time_dim reason income_band item store call_center customer web_site store_returns household_demographics web_page promotion catalog_page inventory catalog_returns web_returns web_sales catalog_sales store_sales 
@@ -30,7 +30,7 @@ fi
 #    echo "Please enter a correct scale factor 10/100, or check the csv file path!"
 #  fi
 #  echo $command
-#  echo -ne "${command}" | duckdb ./dsb_$2.db
+#  echo -ne "${command}" | duckdb ./dsb_$2_polr.db
 #done
 
 
@@ -48,7 +48,7 @@ mkdir -p dsb_$2_result/
 for i in $(eval echo {1.."${iteration}"}); do
   for sql in $(find "$dir_1" "$dir_2" -type f -name "*.sql"); do
     echo "execute ${sql}" 2>&1|tee -a ${log_name};
-    echo -ne ".read ${sql}" | duckdb ./dsb_$2.db 2>&1|tee -a ${log_name};
+    echo -ne ".read ${sql}" | duckdb ./dsb_$2_polr.db 2>&1|tee -a ${log_name};
   done
 done
 
