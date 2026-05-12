@@ -54,6 +54,17 @@
 #include "duckdb/transaction/transaction.hpp"
 #include "duckdb/transaction/transaction_manager.hpp"
 
+#if ENABLE_SERIALIZE_BINARY
+#include "duckdb/common/serializer/binary_serializer.hpp"
+#include "duckdb/common/serializer/buffered_file_writer.hpp"
+#endif
+
+#if ENABLE_SERIALIZE_IR
+#include "cpp_interface.h"
+#include "duckdb_plan_to_ir.h"
+#include "simplest_ir.h"
+#endif
+
 namespace duckdb {
 
 struct ActiveQueryContext {
@@ -358,7 +369,7 @@ ClientContext::FetchCollectionInternal(ClientContextLock &lock, PendingQueryResu
 		D_ASSERT(false);
 		//		// no result collector - create a materialized result by continuously fetching
 		//		auto result_collection = make_unique<ColumnDataCollection>(Allocator::DefaultAllocator(),
-		//pending.types); 		D_ASSERT(!result_collection->Types().empty()); 		auto materialized_result =
+		// pending.types); 		D_ASSERT(!result_collection->Types().empty()); 		auto materialized_result =
 		//		    make_unique<MaterializedQueryResult>(pending.statement_type, pending.properties, pending.names,
 		//		                                         std::move(result_collection), GetClientProperties());
 		//
@@ -429,34 +440,30 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 
 	result->unbound_statement = std::move(tmp_statement);
 	// todo: move this to a standalone function
-//	std::unordered_map<idx_t, std::string> table_alias_name;
-//	idx_t table_index = 0;
-//	if (result->unbound_statement->type == StatementType::SELECT_STATEMENT) {
-//		auto &select_statemet = (SelectStatement &)result->unbound_statement;
-//		auto &select_node = (SelectNode &)select_statemet.node;
-//		auto &node_from_table = select_node.from_table;
-//		std::function<void(const unique_ptr<TableRef> &node_from_table)> iterate_plan;
-//		iterate_plan = [&table_alias_name, &table_index, &iterate_plan](const unique_ptr<TableRef> &node_from_table) {
-//			switch (node_from_table->type) {
-//			case TableReferenceType::BASE_TABLE: {
-//				auto &base_table_ref = (BaseTableRef &)node_from_table;
-//				table_alias_name.insert({table_index, base_table_ref.alias});
-//				table_index++;
-//				break;
-//			}
-//			case TableReferenceType::JOIN: {
-//				auto &join_ref = (JoinRef &)node_from_table;
-//				iterate_plan(join_ref.left);
-//				iterate_plan(join_ref.right);
-//				break;
-//			}
-//			default:
-//				Printer::Print("Doesn't support type " + std::to_string((uint8_t)node_from_table->type) + " yet!");
-//				break;
-//			}
-//		};
-//		iterate_plan(node_from_table);
-//	}
+	//	std::unordered_map<idx_t, std::string> table_alias_name;
+	//	idx_t table_index = 0;
+	//	if (result->unbound_statement->type == StatementType::SELECT_STATEMENT) {
+	//		auto &select_statemet = (SelectStatement &)result->unbound_statement;
+	//		auto &select_node = (SelectNode &)select_statemet.node;
+	//		auto &node_from_table = select_node.from_table;
+	//		std::function<void(const unique_ptr<TableRef> &node_from_table)> iterate_plan;
+	//		iterate_plan = [&table_alias_name, &table_index, &iterate_plan](const unique_ptr<TableRef> &node_from_table)
+	//{ 			switch (node_from_table->type) { 			case TableReferenceType::BASE_TABLE: { 				auto &base_table_ref = (BaseTableRef
+	//&)node_from_table; 				table_alias_name.insert({table_index, base_table_ref.alias}); 				table_index++; 				break;
+	//			}
+	//			case TableReferenceType::JOIN: {
+	//				auto &join_ref = (JoinRef &)node_from_table;
+	//				iterate_plan(join_ref.left);
+	//				iterate_plan(join_ref.right);
+	//				break;
+	//			}
+	//			default:
+	//				Printer::Print("Doesn't support type " + std::to_string((uint8_t)node_from_table->type) + " yet!");
+	//				break;
+	//			}
+	//		};
+	//		iterate_plan(node_from_table);
+	//	}
 
 	if (!planner.properties.bound_all_parameters) {
 		return result;
@@ -464,11 +471,11 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 #ifdef DEBUG
 	plan->Verify(*this);
 #endif
-//#if ENABLE_MEASURE_EXE_TIME || ENABLE_MERGE_BACK_PLAN || ENABLE_DEBUG_PRINT
+	// #if ENABLE_MEASURE_EXE_TIME || ENABLE_MERGE_BACK_PLAN || ENABLE_DEBUG_PRINT
 	execute_plan = plan->type == LogicalOperatorType::LOGICAL_PROJECTION ||
 	               plan->type == LogicalOperatorType::LOGICAL_ORDER_BY ||
 	               plan->type == LogicalOperatorType::LOGICAL_LIMIT;
-//#endif
+	// #endif
 
 #if ENABLE_DEBUG_PRINT
 	if (execute_plan) {
@@ -522,6 +529,12 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 		ReorderGet reorder_get(*this);
 		std::deque<std::pair<idx_t, idx_t>> table_card_order;
 		int64_t previous_result_card;
+
+#if ENABLE_SERIALIZE_IR || ENABLE_SERIALIZE_BINARY
+		static size_t global_split_counter = 0;
+		// intermediate result chunk index, name
+		std::unordered_map<unsigned int, std::string> intermediate_table_map;
+#endif
 
 #if ENABLE_MERGE_BACK_PLAN
 		unique_ptr<LogicalOperator> whole_plan;
@@ -701,6 +714,44 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 			Planner::VerifyPlan(optimizer.context, sub_plan);
 #endif
 
+#if ENABLE_SERIALIZE_BINARY
+			// Serialize the logical plan to binary file
+			std::string filename = "logical_plan_v0.6.1_split_" + std::to_string(global_split_counter) + ".bin";
+
+			BufferedFileWriter writer(FileSystem::GetFileSystem(*this), filename);
+			BinarySerializer serializer(writer);
+
+			serializer.Begin();
+			sub_plan->Serialize(serializer);
+			serializer.End();
+
+			writer.Sync();
+
+			std::cout << "[Serialized] " << filename << std::endl;
+			global_split_counter++;
+#endif
+			// generate an unused table index by the binder
+			auto new_table_idx = planner.binder->GenerateTableIndex();
+			subquery_preparer.SetNewTableIndex(new_table_idx);
+#if ENABLE_SERIALIZE_IR
+			// Convert logical plan to SimplestIR and save to file
+			std::string filename = "logical_plan_v0.6.1_split_" + std::to_string(global_split_counter) + ".ir";
+
+			try {
+				// Convert DuckDB plan to SimplestIR
+				intermediate_table_map[new_table_idx] = "temp_" + std::to_string(global_split_counter);
+				auto simplest_ir = ir_sql_converter::ConvertDuckDBPlanToIR(*planner.binder, *this, sub_plan.get(),
+				                                                           intermediate_table_map);
+
+				// Save SimplestIR to file
+				ir_sql_converter::SaveSimplestIRToFile(simplest_ir, filename);
+				std::cout << "[Saved IR] " << filename << std::endl;
+				global_split_counter++;
+			} catch (std::exception &e) {
+				std::cerr << "[Error] Failed to convert plan to IR: " << e.what() << std::endl;
+			}
+#endif
+
 			idx_t estimated_card = 0;
 #if ENABLE_SPECIFY_EST_STAT
 			estimated_card = subquery_preparer.GetEstCard(sub_plan);
@@ -848,7 +899,7 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 #endif
 			if (1 == subqueries.size()) {
 				// add the original projection head
-//				unique_ptr<LogicalOperator> last_subquery = plan->Copy(optimizer.context);
+				//				unique_ptr<LogicalOperator> last_subquery = plan->Copy(optimizer.context);
 				auto child = plan.get();
 
 				auto &child_node = subqueries.front()[0];
@@ -939,12 +990,52 @@ shared_ptr<PreparedStatementData> ClientContext::CreatePreparedStatement(ClientC
 			plan->Print();
 		}
 #endif
+
+#if ENABLE_SERIALIZE_BINARY
+		if (execute_plan) {
+			// Serialize the logical plan to binary file
+			std::string filename = "logical_plan_v0.6.1_split_" + std::to_string(global_split_counter) + ".bin";
+
+			BufferedFileWriter writer(FileSystem::GetFileSystem(*this), filename);
+			BinarySerializer serializer(writer);
+
+			serializer.Begin();
+			plan->Serialize(serializer);
+			serializer.End();
+
+			writer.Sync();
+
+			std::cout << "[Serialized] " << filename << std::endl;
+			global_split_counter++;
+		}
+#endif
+#if ENABLE_SERIALIZE_IR
+		if (execute_plan) {
+			// Convert logical plan to SimplestIR and save to file
+			std::string filename = "logical_plan_v0.6.1_split_" + std::to_string(global_split_counter) + ".ir";
+
+			try {
+				// Convert DuckDB plan to SimplestIR
+				auto simplest_ir =
+				    ir_sql_converter::ConvertDuckDBPlanToIR(*planner.binder, *this, plan.get(), intermediate_table_map);
+
+				// Save SimplestIR to file
+				ir_sql_converter::SaveSimplestIRToFile(simplest_ir, filename);
+				std::cout << "[Saved IR] " << filename << std::endl;
+				global_split_counter++;
+			} catch (std::exception &e) {
+				std::cerr << "[Error] Failed to convert plan to IR: " << e.what() << std::endl;
+			}
+		}
+#endif
+
 #if ENABLE_MERGE_BACK_PLAN
 		// merge sub_plan to whole_plan
 		auto explain_whole_plan = subquery_preparer.MergeBack(std::move(whole_plan), plan);
 		if (explain_whole_plan) {
 #if WHOLE_PLAN_EXPLAIN_ANALYZE
-			explain_whole_plan = make_unique<LogicalExplain>(std::move(explain_whole_plan), ExplainType::EXPLAIN_ANALYZE);
+			explain_whole_plan =
+			    make_unique<LogicalExplain>(std::move(explain_whole_plan), ExplainType::EXPLAIN_ANALYZE);
 			subquery_preparer.ExplainAnalyzeSubQuery(
 			    lock, result, std::move(explain_whole_plan), result->catalog_version, result->unbound_statement->query,
 			    result->unbound_statement->n_param, result->unbound_statement->named_param_map);
